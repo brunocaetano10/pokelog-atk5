@@ -194,11 +194,11 @@ main{padding-bottom:60px}
 .sprite img{max-width:100px;max-height:86px;image-rendering:pixelated;filter:brightness(0) saturate(0) drop-shadow(0 0 1px #8f9ad6aa);opacity:.42;transition:filter .5s,opacity .5s,transform .3s;transform:scale(1.15)}
 body.art .sprite img{image-rendering:auto;width:86px;height:86px;object-fit:contain;transform:none}
 .mon:hover .sprite img{opacity:.65}
-.mon.done .sprite img,.mon.shiny .sprite img{filter:drop-shadow(0 4px 4px #0009);opacity:1}
+.mon.seen .sprite img{filter:drop-shadow(0 4px 4px #0009);opacity:1}
 .mon:hover .sprite img{transform:scale(1.22)}
 body.art .mon:hover .sprite img{transform:scale(1.06)}
 .mon.done{border-color:color-mix(in srgb,var(--type) 50%,transparent);box-shadow:0 8px 22px -14px var(--type)}
-.mon.shiny{border-color:var(--gold);box-shadow:0 0 18px -6px var(--gold);background:linear-gradient(180deg,#2a2410,#0b0e20 70%)}
+.mon.sfull{border-color:var(--gold);box-shadow:0 0 18px -6px var(--gold);background:linear-gradient(180deg,#2a2410,#0b0e20 70%)}
 .mon.pop{animation:pop .45s}
 @keyframes pop{40%{transform:scale(1.08)}}
 .ball{position:absolute;top:3px;left:3px;width:18px;height:18px;opacity:0;transform:scale(0) rotate(-90deg);transition:.35s cubic-bezier(.3,1.6,.5,1)}
@@ -212,13 +212,39 @@ body.art .mon:hover .sprite img{transform:scale(1.06)}
 .mon-name small{display:block;color:var(--dim);font-weight:400;font-size:11px;margin-top:1px}
 .types{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
 .types i{font-style:normal;font-size:10px;padding:1px 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 30%,transparent);color:color-mix(in srgb,var(--c) 40%,#fff)}
-.mbtns{display:flex;gap:4px;width:100%;margin-top:2px}
-.mbtns button{flex:1;border:1px solid var(--line);background:#ffffff08;color:var(--muted);border-radius:9px;padding:6px 2px;cursor:pointer;font-size:12px;font-weight:500;transition:.2s;display:flex;align-items:center;justify-content:center;gap:4px}
-.mbtns button:hover{color:var(--text);border-color:var(--line2)}
-.chk .box{width:12px;height:12px;border-radius:4px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:9px;line-height:1}
-.mon.done .chk{background:var(--ok);border-color:transparent;color:#05210f}
-.mon.done .chk .box::after{content:"✓";font-weight:700}
-.mon.shiny .shy{background:linear-gradient(135deg,#ffe58a,#ffb347);border-color:transparent;color:#3a2600}
+/* etapas do pokelog: tag (cor = etapa atual) + 3 checkpoints em sequência */
+.logs{display:flex;flex-direction:column;gap:5px;width:100%;margin-top:2px}
+.lg{display:flex;flex-direction:column;gap:3px}
+.lt{height:22px;border:1px solid var(--line);background:#ffffff08;color:var(--muted);border-radius:8px;padding:0 7px;display:flex;align-items:center;justify-content:space-between;gap:4px;
+  font-size:12px;font-weight:500;white-space:nowrap;transition:background .35s,border-color .35s,color .35s,box-shadow .35s}
+.lt span{min-width:0;overflow:hidden;text-overflow:clip}
+.lt i{font-style:normal}
+.lt b{font-weight:600;font-size:11px;opacity:.8}
+.lt small{font-size:inherit}
+.mon{container-type:inline-size}
+@container (max-width:112px){.lt{padding:0 5px}.lt small,.lt i{display:none}}
+.lg.n[data-st="1"] .lt{background:#b9f3d1;border-color:#b9f3d1;color:#0b3a20}
+.lg.n[data-st="2"] .lt{background:#3ddc84;border-color:#3ddc84;color:#05210f}
+.lg.n[data-st="3"] .lt{background:#138a48;border:2px solid #8dffc0;color:#fff;box-shadow:0 0 12px -3px #3ddc84}
+.lg.s[data-st="1"] .lt{background:#fff0b8;border-color:#fff0b8;color:#4a3300}
+.lg.s[data-st="2"] .lt{background:#ffd24a;border-color:#ffd24a;color:#3a2600}
+.lg.s[data-st="3"] .lt{background:#c98a00;border:2px solid #ffe58a;color:#fff;box-shadow:0 0 12px -3px #ffd24a}
+.lg[data-st="3"] .lt span::before{content:"✓ ";font-weight:700}
+.steps{display:flex;gap:2px}
+.steps button{flex:1;min-width:0;height:20px;padding:0;border:1px solid var(--line);background:#ffffff06;color:var(--dim);font-size:10.5px;font-weight:500;cursor:pointer;transition:background .25s,border-color .25s,color .25s}
+.steps button:first-child{border-radius:7px 2px 2px 7px}
+.steps button:last-child{border-radius:2px 7px 7px 2px}
+.steps button:hover{color:var(--text);border-color:var(--line2);background:#ffffff12}
+.steps button.nx{border-style:dashed;color:var(--muted)}
+.lg.n .steps button.on:nth-child(1){background:#b9f3d1;border-color:#b9f3d1;color:#0b3a20}
+.lg.n .steps button.on:nth-child(2){background:#3ddc84;border-color:#3ddc84;color:#05210f}
+.lg.n .steps button.on:nth-child(3){background:#138a48;border-color:#8dffc0;color:#fff}
+.lg.s .steps button.on:nth-child(1){background:#fff0b8;border-color:#fff0b8;color:#4a3300}
+.lg.s .steps button.on:nth-child(2){background:#ffd24a;border-color:#ffd24a;color:#3a2600}
+.lg.s .steps button.on:nth-child(3){background:#c98a00;border-color:#ffe58a;color:#fff}
+.rules{font-size:12px;color:var(--muted);margin-top:8px}
+.rules b{color:var(--text);font-weight:600}
+.kills{color:var(--dim);font-size:12px;margin-top:2px}
 
 .also{margin-top:auto;padding-top:10px;height:40px;flex:none;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden;font-size:12px;color:var(--dim);white-space:nowrap}
 .alsochip{all:unset;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 3px;border-radius:999px;border:1px dashed var(--line2);color:var(--muted);transition:.2s}
@@ -226,7 +252,9 @@ body.art .mon:hover .sprite img{transform:scale(1.06)}
 .alsochip em{padding-right:6px}
 .alsochip img{width:24px;height:24px;object-fit:contain;filter:brightness(0) opacity(.45)}
 .alsochip.done{border-style:solid;border-color:var(--ok);color:var(--text)}
-.alsochip.done img{filter:none}
+.alsochip.seen img{filter:none}
+.alsochip .cs{color:var(--muted);font-size:11px;padding-right:6px}
+.alsochip.done .cs{color:var(--ok)}
 .alsochip em{font-style:normal;color:var(--dim);font-size:11px}
 .alsochip:hover{border-color:var(--text)}
 
@@ -318,10 +346,11 @@ footer a{color:var(--muted)}
       </div>
       <div class="xp-legend"><span>0</span><span id="maxPts"></span></div>
       <div class="xp-key" id="xpKey"></div>
+      <div class="rules">📘 Normal: <b>1 + 3 + 6 = 10 pts</b> · ✨ Shiny: <b>2 + 6 + 12 = 20 pts</b> · cada etapa só conta depois da anterior</div>
 
       <div class="stats">
-        <div class="stat"><small>📘 Pokelogs</small><b id="stDone">0</b></div>
-        <div class="stat"><small>✨ Primeiros shinies</small><b id="stShiny">0</b></div>
+        <div class="stat"><small>📘 Pokelogs completos</small><b id="stDone">0</b></div>
+        <div class="stat"><small>✨ Shinies completos</small><b id="stShiny">0</b></div>
         <div class="stat"><small>🗺️ Rotas completas</small><b id="stRoutes">0</b></div>
         <div class="stat"><small>⏱️ Tempo restante*</small><b id="stTime">—</b></div>
       </div>
@@ -392,7 +421,7 @@ const MONS = {"caterpie":[10,["bug"]],"pineco":[204,["bug"]],"weedle":[13,["bug"
 // [flags, pokémons que contam, tempo, observação, também avança]
 // flags: s = Arcane Shard, i = Instância, * = vale o shiny
 const LAYERS = [
-  {key:'l1', short:'1k', name:'1k Mobs', hex:'#3ddc84', raw:[
+  {key:'l1', short:'1k', name:'1k Mobs', hex:'#3ddc84', kn:[30,300,1000], ks:[20,200,500], raw:[
     ['s','caterpie pineco weedle','','Arcane Shard Pineco · 100 pokes'],
     ['s','cleffa flabebe igglybuff','','Arcane Shard Flabébé · 94 pokes'],
     ['i*','oddish'],
@@ -400,7 +429,7 @@ const LAYERS = [
     ['s','pidgey spearow','','Arcane Shard Pidgey · 103 pokes'],
     ['i*','rattata'],
   ]},
-  {key:'l2', short:'1.5k', name:'1.5k Mobs', hex:'#ffcb05', raw:[
+  {key:'l2', short:'1.5k', name:'1.5k Mobs', hex:'#ffcb05', kn:[60,600,1500], ks:[40,400,1000], raw:[
     ['s','abra drowzee','','Arcane Shard Abra'],
     ['s','aipom','','Arcane Shard Persian + Raticate · 77 pokes','persian raticate'],
     ['','chimchar','15-20 min'],
@@ -443,7 +472,7 @@ const LAYERS = [
     ['','wooper','20-25 min'],
     ['','wurmple','20 min'],
   ]},
-  {key:'l3', short:'3k', name:'3k Mobs', hex:'#4d9dff', raw:[
+  {key:'l3', short:'3k', name:'3k Mobs', hex:'#4d9dff', kn:[120,1200,3000], ks:[50,500,1300], raw:[
     ['','aron'],['','bagon','35 min'],['','baltoy','30 min'],['','barboach','40 min'],['','beldum','30 min'],
     ['','cacnea','40 min'],['','charmeleon'],['','corphish','40-45 min'],['','croconaw'],
     ['s','dratini','','Arcane Shard · 43 pokes'],
@@ -457,7 +486,7 @@ const LAYERS = [
     ['','swablu','30 min'],['i','taillow','25 min'],['','torchic','25 min'],['','trapinch','40-45 min'],
     ['','treecko','30 min'],['','tyrogue','30 min'],['','whismur','25 min'],['','yanma','45-50 min'],
   ]},
-  {key:'l4', short:'4k', name:'4k Mobs', hex:'#ff5a6a', raw:[
+  {key:'l4', short:'4k', name:'4k Mobs', hex:'#ff5a6a', kn:[200,1500,4000], ks:[200,2000,5000], raw:[
     ['','ariados'],['','carvanha','45 min'],['','chansey','45-50 min'],['','clefable'],['','cloyster','45-50 min'],
     ['','combusken','40 min'],['','dewgong'],['i','dodrio','40 min'],['i','dragonair'],['i','dugtrio','40 min'],
     ['i','electrode'],['','espeon'],['','golduck'],['','grovyle','35 min'],['','gulpin'],
@@ -471,8 +500,10 @@ const LAYERS = [
   ]},
 ];
 
-const GOAL = 1600, PT_DONE = 10, PT_SHINY = 2;
-const DOC = {pokelogs:164, points:1968};
+// cada pokelog tem 3 etapas: normal 1/3/6 pts, shiny 2/6/12 pts (acumulado abaixo)
+const GOAL = 1600, PTS = {n:[0, 1, 4, 10], s:[0, 2, 8, 20]}, PT_MON = PTS.n[3] + PTS.s[3];
+const KL = {n:'normal', s:'shiny'};
+const DOC = {pokelogs:164};
 const TC = {normal:'#A8A77A',fire:'#EE8130',water:'#6390F0',electric:'#F7D02C',grass:'#7AC74C',ice:'#96D9D6',fighting:'#C22E28',poison:'#A33EA1',ground:'#E2BF65',flying:'#A98FF3',psychic:'#F95587',bug:'#A6B91A',rock:'#B6A136',ghost:'#735797',dragon:'#6F35FC',dark:'#705746',steel:'#B7B7CE',fairy:'#D685AD'};
 const TN = {normal:'Normal',fire:'Fogo',water:'Água',electric:'Elétrico',grass:'Planta',ice:'Gelo',fighting:'Lutador',poison:'Veneno',ground:'Terra',flying:'Voador',psychic:'Psíquico',bug:'Inseto',rock:'Pedra',ghost:'Fantasma',dragon:'Dragão',dark:'Sombrio',steel:'Aço',fairy:'Fada'};
 const NAMES = {flabebe:'Flabébé',farfetchd:"Farfetch'd"};
@@ -490,6 +521,7 @@ function parseTime(t){
   m = t.match(/(\d+)(?:\s*-\s*(\d+))?\s*min/);
   return m ? (m[2] ? (+m[1] + +m[2]) / 2 : +m[1]) : 0;
 }
+const fk = n => n >= 1000 ? (n / 1000) + 'k' : String(n);
 const fmtMin = m => { m = Math.round(m); const h = Math.floor(m/60); return h ? `${h}h${String(m%60).padStart(2,'0')}` : `${m} min`; };
 
 /* ---------- data model ---------- */
@@ -503,10 +535,10 @@ LAYERS.forEach(L => {
     return R;
   });
   L.mons = L.routes.flatMap(R => R.mons);
-  L.max = L.mons.length * (PT_DONE + PT_SHINY);
+  L.max = L.mons.length * PT_MON;
 });
 const ALL = Object.keys(HOME);
-const MAX = ALL.length * (PT_DONE + PT_SHINY);
+const MAX = ALL.length * PT_MON;
 
 /* ---------- storage ---------- */
 const KEY = 'pokelog-atk5:v1';
@@ -514,16 +546,30 @@ const DEF_F = {layer:'all', status:'all', flags:[], types:[], sort:'guia'};
 function load(){
   try{
     const s = JSON.parse(localStorage.getItem(KEY));
-    if(s && s.m) return {m:s.m, prefs:{anim:true, ...s.prefs, f:{...DEF_F, ...(s.prefs||{}).f}}};
+    if(s && s.m) return {m:normM(s.m), prefs:{anim:true, ...s.prefs, f:{...DEF_F, ...(s.prefs||{}).f}}};
   }catch(e){}
   return {m:{}, prefs:{anim:true, f:{...DEF_F}}};
 }
+// v1 guardava {d: timestamp (pokelog completo), s: timestamp (primeiro shiny)}; v2 guarda {n: 0..3, s: 0..3, t, tk}
+function normM(src){
+  const out = {};
+  for(const [k, v] of Object.entries(src || {})){
+    if(!HOME[k] || !v || typeof v !== 'object') continue;
+    let n = v.n | 0, s = v.s | 0, t = +v.t || 0, tk = v.tk;
+    if(v.d){ n = 3; if(v.d > t){ t = v.d; tk = 'n'; } }
+    if(v.s > 3){ s = 1; if(v.s > t){ t = v.s; tk = 's'; } }
+    n = Math.min(3, Math.max(0, n)); s = Math.min(3, Math.max(0, s));
+    if(n || s) out[k] = {n, s, t, tk:tk === 's' ? 's' : 'n'};
+  }
+  return out;
+}
 let state = load();
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify({...state, updated:Date.now()})); }catch(e){} }
-const st = s => state.m[s] || {};
-const points = () => ALL.reduce((p, s) => p + (st(s).d ? PT_DONE : 0) + (st(s).s ? PT_SHINY : 0), 0);
-const routeDone = R => R.mons.every(s => st(s).d);
-const layerDone = L => L.mons.every(s => st(s).d);
+const lv = (s, k) => (state.m[s] || {})[k] | 0; // etapa 0..3
+const monPts = s => PTS.n[lv(s, 'n')] + PTS.s[lv(s, 's')];
+const points = () => ALL.reduce((p, s) => p + monPts(s), 0);
+const routeDone = R => R.mons.every(s => lv(s, 'n') === 3);
+const layerDone = L => L.mons.every(s => lv(s, 'n') === 3);
 
 /* ---------- sprites ---------- */
 function src(s, shiny, anim){
@@ -544,14 +590,19 @@ document.addEventListener('error', e => {
 
 /* ---------- build DOM ---------- */
 const ball = '<svg class="ball"><use href="#pokeball"/></svg>';
+function logHTML(s, k){
+  const K = HOME[s][k === 'n' ? 'kn' : 'ks'];
+  return `<div class="lg ${k}" data-st="0"><div class="lt"><span>${k === 'n' ? 'Normal' : '<i>✨ </i>Shiny'}</span><b>0<small>/${PTS[k][3]}</small></b></div>
+    <div class="steps">${K.map((x, i) => `<button data-act="st" data-k="${k}" data-i="${i + 1}" title="${KL[k]} · ${fmt(x)} kills · +${PTS[k][i + 1] - PTS[k][i]} pts">${fk(x)}</button>`).join('')}</div></div>`;
+}
 function tile(s){
   const [id, types] = MONS[s];
   return `<div class="mon" data-slug="${s}" style="--type:${TC[types[0]]}">
-    <button class="sprite" data-act="d" title="Marcar pokelog de ${nm(s)}"><img alt="${nm(s)}" data-s="${s}" loading="lazy">${ball}
+    <button class="sprite" data-act="adv" title="Avançar a próxima etapa de ${nm(s)}"><img alt="${nm(s)}" data-s="${s}" loading="lazy">${ball}
       <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✧</span></button>
     <div class="mon-name">${nm(s)}<small>#${String(id).padStart(3,'0')}</small></div>
     <div class="types">${types.map(t => `<i style="--c:${TC[t]}">${TN[t]}</i>`).join('')}</div>
-    <div class="mbtns"><button class="chk" data-act="d" title="Pokelog completo (+${PT_DONE})"><span class="box"></span>Pokelog</button><button class="shy" data-act="s" title="Primeiro shiny (+${PT_SHINY})">✨ Shiny</button></div>
+    <div class="logs">${logHTML(s, 'n')}${logHTML(s, 's')}</div>
   </div>`;
 }
 // estrutura fixa: cabeçalho (1 linha) · meta (2 linhas) · pokémons · rodapé "também avança" (1 linha)
@@ -569,7 +620,7 @@ function routeHTML(R){
     (R.note ? `<span class="note" title="${R.note}">${R.note}</span>` : '') ||
     '<span class="none">Sem observações no guia</span>';
   const also = R.also.length ? `<div class="also">Também avança:${R.also.map(s =>
-    `<button class="alsochip" data-slug="${s}" data-act="d" title="${nm(s)} · conta em ${HOME[s].name}"><img alt="${nm(s)}" data-s="${s}" loading="lazy"><span class="an">${nm(s)}</span><em>${HOME[s].short}</em></button>`).join('')}</div>` : '';
+    `<button class="alsochip" data-slug="${s}" data-act="adv" title="${nm(s)} · conta em ${HOME[s].name} · clique para avançar a próxima etapa"><img alt="${nm(s)}" data-s="${s}" loading="lazy"><span class="an">${nm(s)}</span><em>${HOME[s].short}</em><span class="cs"></span></button>`).join('')}</div>` : '';
   return `<article class="route" id="${R.id}" style="--n:${R.mons.length}">
     <div class="rhead"><span class="rnum">#${R.i}</span><div class="tags">${tags}</div><span class="rcheck">✓</span></div>
     <div class="rmeta">${meta}</div>
@@ -582,7 +633,8 @@ LAYERS.forEach(L => {
   sec.className = 'layer'; sec.id = 'sec-' + L.key; sec.style.setProperty('--lc', L.hex);
   sec.innerHTML = `<div class="layer-head">
       <div><h2><span class="pixel">${L.short}</span>Pokelogs de ${L.name}</h2>
-      <div class="sub">${L.mons.length} pokelogs · ${L.routes.length} rotas · até ${fmt(L.max)} pts</div></div>
+      <div class="sub">${L.mons.length} pokelogs · ${L.routes.length} rotas · até ${fmt(L.max)} pts</div>
+      <div class="kills">Kills por etapa: normal ${L.kn.map(fk).join(' / ')} · shiny ${L.ks.map(fk).join(' / ')}</div></div>
       <div class="lh-prog"><div class="bar"><i></i></div><span></span></div>
     </div><div class="routes">${L.routes.map(routeHTML).join('')}</div>`;
   main.insertBefore(sec, $('#empty'));
@@ -605,7 +657,7 @@ $('#goalTxt').textContent = fmt(GOAL);
 $('#maxPts').textContent = fmt(MAX) + ' pts';
 $('#xpGoal').style.left = (GOAL / MAX * 100) + '%';
 $('#footNote').textContent = ALL.length !== DOC.pokelogs
-  ? `O guia anuncia ${DOC.pokelogs} pokelogs / ${fmt(DOC.points)} pts; contando os pokémons listados nele são ${ALL.length} únicos (${fmt(MAX)} pts), ainda ${fmt(MAX - GOAL)} acima da meta. Os totais aqui usam a contagem real.`
+  ? `O guia anuncia ${DOC.pokelogs} pokelogs; contando os pokémons listados nele são ${ALL.length} únicos (até ${fmt(MAX)} pts somando as 3 etapas normais e shiny de cada). Os totais aqui usam a contagem real.`
   : '';
 
 /* ---------- render ---------- */
@@ -619,27 +671,38 @@ function countTo(el, to){
 }
 function refresh(){
   document.querySelectorAll('.mon,.alsochip').forEach(el => {
-    const s = el.dataset.slug, m = st(s);
-    el.classList.toggle('done', !!m.d);
-    el.classList.toggle('shiny', !!m.s);
-    setImg(el.querySelector('img'), s, !!m.s);
+    const s = el.dataset.slug, n = lv(s, 'n'), sh = lv(s, 's');
+    el.classList.toggle('seen', n > 0 || sh > 0);
+    el.classList.toggle('done', n === 3);
+    el.classList.toggle('shiny', sh > 0);
+    el.classList.toggle('sfull', sh === 3);
+    setImg(el.querySelector('img'), s, sh > 0);
+    el.querySelectorAll('.lg').forEach(g => {
+      const k = g.classList.contains('n') ? 'n' : 's', v = k === 'n' ? n : sh;
+      g.dataset.st = v;
+      g.querySelector('b').firstChild.nodeValue = PTS[k][v];
+      g.querySelectorAll('.steps button').forEach((b, i) => { b.classList.toggle('on', i < v); b.classList.toggle('nx', i === v); });
+    });
+    const cs = el.querySelector('.cs'); if(cs) cs.textContent = n === 3 ? '✓' : `${n}/3`;
   });
   ROUTES.forEach(R => {
     R.el.classList.toggle('done', routeDone(R));
-    R.el.classList.toggle('perfect', R.mons.every(s => st(s).d && st(s).s));
+    R.el.classList.toggle('perfect', R.mons.every(s => lv(s, 'n') === 3 && lv(s, 's') === 3));
   });
 
   const pts = points();
   let done = 0, shiny = 0;
   LAYERS.forEach(L => {
-    const d = L.mons.filter(s => st(s).d).length, sh = L.mons.filter(s => st(s).s).length;
-    const p = d * PT_DONE + sh * PT_SHINY;
+    const d = L.mons.filter(s => lv(s, 'n') === 3).length, sh = L.mons.filter(s => lv(s, 's') === 3).length;
+    const p = L.mons.reduce((a, s) => a + monPts(s), 0);
+    // anel e barra da camada = progresso dos pokelogs normais (pontos normais / máximo normal)
+    const r = L.mons.reduce((a, s) => a + PTS.n[lv(s, 'n')], 0) / (L.mons.length * PTS.n[3]);
     done += d; shiny += sh;
-    L.bar.style.width = (d / L.mons.length * 100) + '%';
+    L.bar.style.width = (r * 100) + '%';
     L.cnt.textContent = `${d}/${L.mons.length}`;
     L.seg.style.width = (p / MAX * 100) + '%';
-    L.card.querySelector('.fg').style.strokeDashoffset = 182.2 * (1 - d / L.mons.length);
-    L.card.querySelector('.ring span').textContent = Math.round(d / L.mons.length * 100) + '%';
+    L.card.querySelector('.fg').style.strokeDashoffset = 182.2 * (1 - r);
+    L.card.querySelector('.ring span').textContent = Math.floor(r * 100) + '%';
     L.card.querySelector('small').textContent = `${d}/${L.mons.length} · ${fmt(p)}/${fmt(L.max)} pts`;
     L.card.classList.toggle('full', d === L.mons.length);
   });
@@ -648,7 +711,7 @@ function refresh(){
   const left = GOAL - pts;
   $('#hero').classList.toggle('goal', left <= 0);
   $('#scoreMsg').innerHTML = left > 0
-    ? `Faltam <b>${fmt(left)} pts</b> para o ATK 5 · ≈ ${Math.ceil(left / (PT_DONE + PT_SHINY))} pokelogs com shiny`
+    ? `Faltam <b>${fmt(left)} pts</b> para o ATK 5 · ≈ ${Math.ceil(left / PTS.n[3])} pokelogs normais completos`
     : `🏆 <b>ATK 5 alcançado!</b> ${left < 0 ? `+${fmt(-left)} pts além da meta` : 'na conta exata'}`;
   $('#stDone').innerHTML = `${done}<em> / ${ALL.length}</em>`;
   $('#stShiny').innerHTML = `${shiny}<em> / ${ALL.length}</em>`;
@@ -665,8 +728,8 @@ function refresh(){
 let partnerKey = null;
 function renderPartner(){
   let best = null;
-  for(const s of ALL){ const m = st(s), t = Math.max(m.d || 0, m.s || 0); if(t && (!best || t > best.t)) best = {s, t, sh:!!m.s}; }
-  const key = best ? best.s + best.sh : '';
+  for(const s of ALL){ const m = state.m[s]; if(m && m.t && (!best || m.t > best.t)) best = {s, t:m.t, sh:m.s > 0, n:m.n, ss:m.s}; }
+  const key = best ? [best.s, best.n, best.ss].join() : '';
   if(key === partnerKey) return; partnerKey = key;
   const p = $('#partner');
   if(!best){ p.style.removeProperty('--pc'); p.innerHTML = `<svg class="ph"><use href="#pokeball"/></svg><div><small>Nenhum registro ainda</small><div class="when">Clique num pokémon para marcar seu primeiro pokelog</div></div>`; return; }
@@ -674,7 +737,7 @@ function renderPartner(){
   p.style.setProperty('--pc', TC[types[0]]);
   const when = new Date(best.t).toLocaleString('pt-BR', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
   p.innerHTML = `<div class="stage"><img alt="${nm(best.s)}" src="${src(best.s, best.sh, false)}"></div>
-    <div><small>Último registro</small><br><b>${nm(best.s)}${best.sh ? ' ✨' : ''}</b><div class="when">#${String(id).padStart(3,'0')} · ${HOME[best.s].name} · ${when}</div></div>`;
+    <div><small>Último registro</small><br><b>${nm(best.s)}${best.sh ? ' ✨' : ''}</b><div class="when">Normal ${best.n}/3 · Shiny ${best.ss}/3</div><div class="when">#${String(id).padStart(3,'0')} · ${HOME[best.s].name} · ${when}</div></div>`;
 }
 
 function renderNext(){
@@ -686,10 +749,10 @@ function renderNext(){
     pick = pend.find(R => R.s) || pend[0]; break;
   }
   if(!pick){ el.innerHTML = `<span class="lbl">Rota completa</span><div class="body"><div class="txt"><b>Todos os pokelogs concluídos! 👑</b><div>Que tal fechar os shinies que faltam?</div></div></div>`; return; }
-  const left = pick.mons.filter(s => !st(s).d);
+  const left = pick.mons.filter(s => lv(s, 'n') < 3);
   el.innerHTML = `<span class="lbl">Próxima rota sugerida</span>
     <div class="body"><div class="minis">${left.map(s => `<img alt="${nm(s)}" src="${src(s, false, false)}">`).join('')}</div>
-    <div class="txt"><b>${left.map(nm).join(' + ')}</b>
+    <div class="txt"><b>${left.map(s => nm(s) + (lv(s, 'n') ? ` (${lv(s, 'n')}/3)` : '')).join(' + ')}</b>
     <div>${pick.L.name} · rota #${pick.i}${pick.s ? ' · 💎 Arcane Shard' : ''}${pick.inst ? ' · ⚔️ Instância' : ''}${pick.time ? ' · ⏱️ ' + pick.time : ''}${pick.note && !pick.note.startsWith('Arcane') ? ' · ' + pick.note : ''}</div></div></div>
     <button class="go" data-act="goto" data-v="${pick.id}">Ver rota →</button>`;
 }
@@ -729,7 +792,7 @@ document.addEventListener('change', e => {
 document.addEventListener('click', e => { if(!e.target.closest('.ms')) closeMs(); });
 
 /* ---------- ordenação (dentro de cada camada, via CSS order) ---------- */
-const doneRatio = R => R.mons.filter(s => st(s).d).length / R.mons.length;
+const doneRatio = R => R.mons.reduce((a, s) => a + lv(s, 'n'), 0) / (R.mons.length * 3);
 const SORTS = {
   't-asc':  R => R.mins || Infinity,
   't-desc': R => R.mins ? -R.mins : Infinity,
@@ -755,8 +818,7 @@ function applyFilters(){
     if(v && f.flags.length) v = FLAGS.some(F => f.flags.includes(F.v) && F.has(R));
     if(v && f.types.length) v = R.mons.some(s => MONS[s][1].some(t => f.types.includes(t)));
     if(v && f.status !== 'all'){
-      const m = R.mons.map(st);
-      v = f.status === 'pend' ? m.some(x => !x.d) : f.status === 'done' ? m.every(x => x.d) : m.some(x => !x.s);
+      v = f.status === 'pend' ? R.mons.some(s => lv(s, 'n') < 3) : f.status === 'done' ? R.mons.every(s => lv(s, 'n') === 3) : R.mons.some(s => lv(s, 's') < 3);
     }
     if(v && q) v = [...R.mons, ...R.also].some(s => norm(nm(s)).includes(q)) || norm(R.note).includes(q);
     R.el.hidden = !v;
@@ -823,25 +885,30 @@ $('#celebrate').onclick = e => e.currentTarget.hidden = true;
 
 /* ---------- actions ---------- */
 let filterTimer = 0;
-function setMark(s, k, on){
-  const m = state.m[s] || (state.m[s] = {});
-  if(on) m[k] = Date.now(); else delete m[k];
-  if(!m.d && !m.s) delete state.m[s];
+function setStage(s, k, v){
+  const m = state.m[s] || (state.m[s] = {n:0, s:0});
+  m[k] = v; m.t = Date.now(); m.tk = k;
+  if(!m.n && !m.s) delete state.m[s];
   save(); refresh();
   clearTimeout(filterTimer); filterTimer = setTimeout(applyFilters, 1200);
 }
-function toggle(s, k, btn){
-  const on = !st(s)[k], L = HOME[s], R = ROUTES.find(r => r.mons.includes(s));
+// clicar numa etapa vazia marca ela e todas as anteriores; clicar numa marcada desmarca ela e as seguintes
+function step(s, k, i, btn){
+  const cur = lv(s, k), next = i <= cur ? i - 1 : i;
+  if(next === cur) return;
+  const L = HOME[s], R = ROUTES.find(r => r.mons.includes(s));
   const before = {pts:points(), rd:routeDone(R), ld:layerDone(L)};
-  setMark(s, k, on);
-  const undo = () => setMark(s, k, !on);
-  if(!on){ toast(`<b>${nm(s)}</b>: ${k === 'd' ? 'pokelog' : 'shiny'} desmarcado (−${k === 'd' ? PT_DONE : PT_SHINY} pts)`, {undo}); return; }
+  setStage(s, k, next);
+  const undo = () => setStage(s, k, cur);
+  const diff = PTS[k][next] - PTS[k][cur], K = L[k === 'n' ? 'kn' : 'ks'];
+  const label = k === 'n' ? 'normal' : '✨ shiny';
+  if(next < cur){ toast(`<b>${nm(s)}</b>: ${label} voltou para ${next}/3 (−${-diff} pts)`, {undo}); return; }
 
   document.querySelectorAll(`.mon[data-slug="${s}"]`).forEach(t => { t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop'); });
   const r = btn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
-  const type = TC[MONS[s][1][0]];
-  burst(x, y, k === 's' ? 46 : 30, k === 's' ? GOLD : [type, L.hex, '#ffffff', '#ff3b4a']);
-  toast(k === 'd' ? `<b>+${PT_DONE} pts</b> · pokelog de <b>${nm(s)}</b> completo` : `<b>+${PT_SHINY} pts</b> · primeiro shiny de <b>${nm(s)}</b> ✨`,
+  const type = TC[MONS[s][1][0]], full = next === 3;
+  burst(x, y, (k === 's' ? 30 : 18) + (full ? 30 : 0), k === 's' ? GOLD : [type, L.hex, '#ffffff', '#ff3b4a'], full ? 1.2 : .8);
+  toast(`<b>+${diff} pts</b> · ${nm(s)} ${label} ${fk(K[next - 1])} kills` + (full ? ` — <b>completo!</b>` : ` (${next}/3)`),
     {undo, img:src(s, k === 's', false)});
 
   if(!before.rd && routeDone(R)){
@@ -851,12 +918,19 @@ function toggle(s, k, btn){
   if(!before.ld && layerDone(L)) setTimeout(() => celebrate(`${L.name} completo!`, `${L.mons.length} pokelogs de ${L.name} registrados 👑`), 300);
   if(before.pts < GOAL && points() >= GOAL) setTimeout(() => celebrate('ATK 5 desbloqueado!', `${fmt(points())} pontos — +10% de Attack garantido 🏆`), 500);
 }
+// clique no sprite: próxima etapa normal; com o normal completo, avança o shiny
+function advance(s, btn){
+  if(lv(s, 'n') < 3) return step(s, 'n', lv(s, 'n') + 1, btn);
+  if(lv(s, 's') < 3) return step(s, 's', lv(s, 's') + 1, btn);
+  toast(`<b>${nm(s)}</b> já está com normal e shiny completos 👑`);
+}
 
 let resetArm = 0;
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-act]'); if(!a) return;
   const host = a.closest('[data-slug]'), act = a.dataset.act, v = a.dataset.v, f = state.prefs.f;
-  if(host && (act === 'd' || act === 's')) return toggle(host.dataset.slug, act, a);
+  if(host && act === 'st') return step(host.dataset.slug, a.dataset.k, +a.dataset.i, a);
+  if(host && act === 'adv') return advance(host.dataset.slug, a);
   if(act === 'layer'){
     f.layer = (a.classList.contains('lcard') && f.layer === v) ? 'all' : v;
     save(); renderControls(); applyFilters();
@@ -871,7 +945,7 @@ document.addEventListener('click', e => {
     R.el.scrollIntoView({block:'center'}); R.el.classList.remove('flash'); void R.el.offsetWidth; R.el.classList.add('flash');
   } else if(act === 'anim'){ state.prefs.anim = !state.prefs.anim; save(); refresh(); }
   else if(act === 'export'){
-    const blob = new Blob([JSON.stringify({app:'pokelog-atk5', version:1, exported:new Date().toISOString(), m:state.m}, null, 2)], {type:'application/json'});
+    const blob = new Blob([JSON.stringify({app:'pokelog-atk5', version:2, exported:new Date().toISOString(), m:state.m}, null, 2)], {type:'application/json'});
     const l = document.createElement('a'); l.href = URL.createObjectURL(blob);
     l.download = `pokelog-atk5-backup-${new Date().toISOString().slice(0, 10)}.json`; l.click(); URL.revokeObjectURL(l.href);
     toast('💾 Backup baixado');
@@ -892,7 +966,7 @@ $('#importFile').onchange = async e => {
   try{
     const d = JSON.parse(await file.text());
     if(!d || typeof d.m !== 'object') throw 0;
-    state.m = Object.fromEntries(Object.entries(d.m).filter(([s]) => HOME[s]));
+    state.m = normM(d.m);
     save(); refresh(); applyFilters(); toast(`✅ Backup restaurado (${points()} pts)`);
   }catch(err){ toast('❌ Arquivo de backup inválido'); }
   e.target.value = '';

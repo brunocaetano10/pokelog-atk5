@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rota Pokelog ATK 5</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23fff' stroke='%23111' stroke-width='6'/%3E%3Cpath d='M4 50a46 46 0 0 1 92 0z' fill='%23ff3b4a' stroke='%23111' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%23fff' stroke='%23111' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0c0f1f; --card:#171c3a; --card2:#1f2650; --line:#2a3268; --line2:#3a4590;
+  --text:#eef1ff; --muted:#98a1d3; --dim:#6a73a8;
+  --ok:#3ddc84; --gold:#ffd24a; --red:#ff4d5a;
+  --l1:#3ddc84; --l2:#ffcb05; --l3:#4d9dff; --l4:#ff5a6a;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--text); background:var(--bg);
+  font:16px/1.4 Fredoka,system-ui,sans-serif;
+  background-image:
+    radial-gradient(1100px 520px at 8% -8%,#3b2a9a40,transparent 70%),
+    radial-gradient(900px 480px at 100% 0%,#9a2a4a33,transparent 70%),
+    radial-gradient(circle at 1px 1px,#ffffff0a 1px,transparent 0);
+  background-size:auto,auto,22px 22px;
+  background-attachment:fixed;
+  overflow-x:clip;
+}
+button{font:inherit;color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+.pixel{font-family:"Press Start 2P",monospace;letter-spacing:.5px}
+
+/* ---------- hero ---------- */
+.hero{padding:28px 0 8px}
+.hero-grid{display:grid;grid-template-columns:1fr 260px;gap:22px;align-items:stretch}
+.panel{background:linear-gradient(160deg,#1b2147ee,#131834ee);border:1px solid var(--line);border-radius:24px;padding:24px;position:relative;overflow:hidden}
+.brand{display:flex;align-items:center;gap:14px}
+.brand svg{width:46px;height:46px;flex:none;filter:drop-shadow(0 4px 10px #ff3b4a55);animation:wob 6s ease-in-out infinite}
+@keyframes wob{0%,90%,100%{transform:rotate(0)}93%{transform:rotate(-14deg)}96%{transform:rotate(12deg)}}
+h1{margin:0;font-size:28px;font-weight:700;line-height:1.1}
+h1 .pixel{font-size:15px;color:var(--gold);vertical-align:middle;margin-left:6px;text-shadow:0 0 12px #ffd24a66}
+.brand p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.tools{position:absolute;top:18px;right:18px;display:flex;gap:6px}
+.icon-btn{border:1px solid var(--line);background:#0004;border-radius:12px;padding:7px 10px;cursor:pointer;font-size:13px;color:var(--muted);transition:.2s;white-space:nowrap}
+.icon-btn:hover{color:var(--text);border-color:var(--line2);background:#fff1}
+.icon-btn.warn{color:#ffd0d4;border-color:#ff4d5a88;background:#ff4d5a22}
+
+.score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:24px 0 10px}
+.score-num{font-size:56px;font-weight:700;line-height:1;letter-spacing:-1px;background:linear-gradient(90deg,#fff,#ffe9a8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.score-num small{font-size:20px;color:var(--muted);-webkit-text-fill-color:var(--muted);margin-left:6px;letter-spacing:0;font-weight:500}
+.score-msg{color:var(--muted);font-size:16px}
+.score-msg b{color:var(--gold)}
+.hero.goal .score-msg{color:var(--gold)}
+
+.xp{position:relative;height:22px;border-radius:999px;background:#0a0d1c;border:1px solid var(--line);display:flex;overflow:visible;margin-top:34px}
+.xp .segs{display:flex;width:100%;height:100%;border-radius:999px;overflow:hidden;position:relative}
+.xp .seg{height:100%;transition:width .7s cubic-bezier(.2,.9,.3,1.2);position:relative}
+.xp .segs::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,#ffffff40 50%,transparent 70%);background-size:220% 100%;animation:shine 3.2s linear infinite;pointer-events:none}
+@keyframes shine{from{background-position:120% 0}to{background-position:-120% 0}}
+.xp-goal{position:absolute;top:-30px;bottom:-6px;width:0;border-left:2px dashed var(--gold)}
+.xp-goal span{position:absolute;top:0;transform:translateX(-50%);background:var(--gold);color:#2b2000;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.xp-legend{display:flex;justify-content:space-between;color:var(--dim);font-size:12px;margin-top:6px}
+.xp-key{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:4px}
+.xp-key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+.stat{background:#0004;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.stat small{display:block;color:var(--dim);font-size:12px}
+.stat b{font-size:20px;font-weight:600}
+.stat b em{font-style:normal;color:var(--dim);font-size:14px;font-weight:500}
+
+.partner{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:20px}
+.partner .stage{width:190px;height:190px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:radial-gradient(circle at 50% 60%,var(--pc,#4d9dff)55,transparent 66%)}
+.partner .stage::after{content:"";position:absolute;inset:6px;border-radius:50%;border:2px dashed #ffffff1a;animation:spin 30s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.partner img{width:170px;height:170px;object-fit:contain;filter:drop-shadow(0 10px 18px #0009);animation:float 4s ease-in-out infinite;position:relative;z-index:1}
+@keyframes float{50%{transform:translateY(-8px)}}
+.partner small{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
+.partner b{font-size:22px}
+.partner .when{color:var(--muted);font-size:13px}
+.partner .ph{width:120px;height:120px;opacity:.25;animation:float 4s ease-in-out infinite}
+
+/* ---------- layer cards ---------- */
+.lnav{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0 0}
+.lcard{all:unset;cursor:pointer;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:20px;border:1px solid var(--line);
+  background:linear-gradient(150deg,color-mix(in srgb,var(--lc) 14%,#171c3a),#141936);transition:.25s;position:relative;overflow:hidden}
+.lcard:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--lc) 60%,var(--line))}
+.lcard[aria-pressed=true]{border-color:var(--lc);box-shadow:0 0 0 1px var(--lc),0 10px 30px -14px var(--lc)}
+.ring{width:62px;height:62px;flex:none;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:7}
+.ring .bg{stroke:#ffffff12}
+.ring .fg{stroke:var(--lc);stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.2,.9,.3,1)}
+.ring span{position:absolute;inset:0;display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--lc)}
+.lcard b{display:block;font-size:17px}
+.lcard small{color:var(--muted);font-size:13px}
+.lcard .crown{position:absolute;top:8px;right:10px;font-size:16px;display:none}
+.lcard.full .crown{display:block;animation:pop .5s}
+
+/* ---------- next ---------- */
+.next{margin-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 18px;border-radius:20px;border:1px dashed var(--line2);background:#ffffff06}
+.next .lbl{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold)}
+.next .body{display:flex;align-items:center;gap:12px;flex:1;min-width:240px;flex-wrap:wrap}
+.next .minis{display:flex}
+.next .minis img{width:52px;height:52px;object-fit:contain;margin-right:-6px;filter:drop-shadow(0 3px 4px #0008)}
+.next .txt b{font-size:17px}
+.next .txt div{color:var(--muted);font-size:13px}
+.go{border:0;background:var(--gold);color:#2b2000;font-weight:600;padding:9px 16px;border-radius:12px;cursor:pointer;transition:.2s}
+.go:hover{filter:brightness(1.1);transform:translateY(-1px)}
+
+/* ---------- toolbar ---------- */
+.toolbar{position:sticky;top:0;z-index:20;margin-top:18px;padding:12px 0;background:linear-gradient(#0c0f1ff2 70%,#0c0f1f00)}
+.toolbar .wrap{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1 1 220px;position:relative}
+.search input{width:100%;background:#0a0d1c;border:1px solid var(--line);border-radius:14px;padding:10px 14px 10px 38px;color:var(--text);font:inherit;outline:none;transition:.2s}
+.search input:focus{border-color:var(--line2);box-shadow:0 0 0 3px #4d9dff22}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;opacity:.5}
+.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:12px Fredoka;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+.seg-group{display:flex;background:#0a0d1c;border:1px solid var(--line);border-radius:14px;padding:3px}
+.seg-group button{border:0;background:none;padding:7px 11px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:14px;white-space:nowrap;transition:.15s}
+.seg-group button:hover{color:var(--text)}
+.seg-group button[aria-pressed=true]{background:var(--card2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line2)}
+.chip{border:1px solid var(--line);background:#0a0d1c;border-radius:999px;padding:8px 12px;cursor:pointer;color:var(--muted);font-size:14px;transition:.15s;white-space:nowrap}
+.chip:hover{color:var(--text)}
+.chip[aria-pressed=true]{background:#ffd24a1f;border-color:var(--gold);color:var(--text)}
+
+/* ---------- layers ---------- */
+main{padding-bottom:60px}
+.layer{margin-top:26px;scroll-margin-top:80px}
+.layer-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 18px;border-radius:18px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--lc) 20%,transparent),transparent 70%);border-left:4px solid var(--lc);margin-bottom:14px}
+.layer-head h2{margin:0;font-size:22px;display:flex;align-items:center;gap:10px}
+.layer-head h2 .pixel{font-size:11px;color:var(--lc);background:#0006;padding:6px 8px;border-radius:8px}
+.layer-head .sub{color:var(--muted);font-size:14px;margin-top:2px}
+.lh-prog{display:flex;align-items:center;gap:10px;min-width:220px}
+.bar{flex:1;height:10px;border-radius:999px;background:#0006;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--lc);border-radius:999px;transition:width .7s cubic-bezier(.2,.9,.3,1)}
+.lh-prog span{font-weight:600;font-size:14px;min-width:54px;text-align:right}
+
+.routes{display:flex;flex-wrap:wrap;gap:14px}
+.route{flex:1 1 min(100%,calc(var(--n)*138px + 26px));min-width:0;max-width:calc(var(--n)*190px + 26px);background:linear-gradient(170deg,#1a2044,#141935);
+  border:1px solid var(--line);border-radius:var(--r);padding:12px;position:relative;transition:border-color .3s,box-shadow .3s;scroll-margin-top:90px}
+.route.done{border-color:color-mix(in srgb,var(--lc) 55%,var(--line))}
+.route.perfect{border-color:var(--gold);box-shadow:0 0 24px -10px var(--gold)}
+.route.flash{animation:flash 1.6s}
+@keyframes flash{0%,100%{box-shadow:none}20%,60%{box-shadow:0 0 0 3px var(--gold),0 0 40px -6px var(--gold)}}
+.rhead{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;min-height:26px}
+.rnum{font-family:"Press Start 2P",monospace;font-size:10px;color:var(--lc);background:#0006;padding:5px 7px;border-radius:7px}
+.badge{font-size:12px;padding:3px 8px;border-radius:999px;background:#ffffff0d;border:1px solid #ffffff14;color:var(--muted);white-space:nowrap}
+.badge.s{background:#7a5cff22;border-color:#7a5cff66;color:#cfc4ff}
+.badge.i{background:#ff7a3d22;border-color:#ff7a3d66;color:#ffd2b8}
+.badge.st{background:#ffd24a1c;border-color:#ffd24a66;color:#ffe9a8}
+.badge.t{background:#4d9dff1c;border-color:#4d9dff55;color:#cfe3ff}
+.rcheck{margin-left:auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#ffffff0d;color:transparent;transition:.3s}
+.route.done .rcheck{background:var(--lc);color:#071a0f;transform:scale(1.05)}
+.route.perfect .rcheck{background:var(--gold);color:#2b2000}
+.note{margin:0 0 10px;font-size:13px;color:var(--muted)}
+.mons{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px}
+
+.mon{position:relative;background:#0b0e20;border:1px solid #ffffff10;border-radius:14px;padding:8px 7px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;transition:border-color .3s,box-shadow .3s,transform .2s}
+.mon.hit{box-shadow:0 0 0 2px var(--l3)}
+.sprite{all:unset;cursor:pointer;width:100%;height:92px;display:grid;place-items:center;position:relative;border-radius:10px;
+  background:radial-gradient(ellipse 60% 22% at 50% 86%,color-mix(in srgb,var(--type) 45%,transparent),transparent 70%)}
+.sprite:focus-visible{outline:2px solid var(--l3)}
+.sprite img{max-width:100px;max-height:86px;image-rendering:pixelated;filter:brightness(0) saturate(0) drop-shadow(0 0 1px #8f9ad6aa);opacity:.42;transition:filter .5s,opacity .5s,transform .3s;transform:scale(1.15)}
+body.art .sprite img{image-rendering:auto;width:86px;height:86px;object-fit:contain;transform:none}
+.mon:hover .sprite img{opacity:.65}
+.mon.done .sprite img,.mon.shiny .sprite img{filter:drop-shadow(0 4px 4px #0009);opacity:1}
+.mon:hover .sprite img{transform:scale(1.22)}
+body.art .mon:hover .sprite img{transform:scale(1.06)}
+.mon.done{border-color:color-mix(in srgb,var(--type) 50%,transparent);box-shadow:0 8px 22px -14px var(--type)}
+.mon.shiny{border-color:var(--gold);box-shadow:0 0 18px -6px var(--gold);background:linear-gradient(180deg,#2a2410,#0b0e20 70%)}
+.mon.pop{animation:pop .45s}
+@keyframes pop{40%{transform:scale(1.08)}}
+.ball{position:absolute;top:3px;left:3px;width:18px;height:18px;opacity:0;transform:scale(0) rotate(-90deg);transition:.35s cubic-bezier(.3,1.6,.5,1)}
+.mon.done .ball{opacity:1;transform:none}
+.spark{position:absolute;color:var(--gold);opacity:0;pointer-events:none;text-shadow:0 0 6px #ffd24a}
+.s1{top:6px;right:12px;font-size:16px}.s2{top:40px;left:10px;font-size:11px}.s3{bottom:14px;right:18px;font-size:13px}
+.mon.shiny .spark{animation:twinkle 2.2s infinite}
+.mon.shiny .s2{animation-delay:.7s}.mon.shiny .s3{animation-delay:1.4s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1)}}
+.mon-name{font-weight:600;font-size:14px;text-align:center;line-height:1.1}
+.mon-name small{display:block;color:var(--dim);font-weight:400;font-size:11px;margin-top:1px}
+.types{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
+.types i{font-style:normal;font-size:10px;padding:1px 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 30%,transparent);color:color-mix(in srgb,var(--c) 40%,#fff)}
+.mbtns{display:flex;gap:4px;width:100%;margin-top:2px}
+.mbtns button{flex:1;border:1px solid var(--line);background:#ffffff08;color:var(--muted);border-radius:9px;padding:6px 2px;cursor:pointer;font-size:12px;font-weight:500;transition:.2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.mbtns button:hover{color:var(--text);border-color:var(--line2)}
+.chk .box{width:12px;height:12px;border-radius:4px;border:1.5px solid currentColor;display:grid;place-items:center;font-size:9px;line-height:1}
+.mon.done .chk{background:var(--ok);border-color:transparent;color:#05210f}
+.mon.done .chk .box::after{content:"✓";font-weight:700}
+.mon.shiny .shy{background:linear-gradient(135deg,#ffe58a,#ffb347);border-color:transparent;color:#3a2600}
+
+.also{margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+.alsochip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 3px;border-radius:999px;border:1px dashed var(--line2);color:var(--muted);transition:.2s}
+.alsochip img{width:24px;height:24px;object-fit:contain;filter:brightness(0) opacity(.45)}
+.alsochip.done{border-style:solid;border-color:var(--ok);color:var(--text)}
+.alsochip.done img{filter:none}
+.alsochip em{font-style:normal;color:var(--dim);font-size:11px}
+.alsochip:hover{border-color:var(--text)}
+
+.empty{text-align:center;color:var(--muted);padding:60px 20px}
+.empty .big{font-size:42px}
+
+footer{color:var(--dim);font-size:13px;text-align:center;padding:30px 20px 50px;border-top:1px solid #ffffff0d}
+footer p{margin:6px auto;max-width:760px}
+footer a{color:var(--muted)}
+
+/* ---------- toasts & celebration ---------- */
+.toasts{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(92vw,440px)}
+.toast{pointer-events:auto;background:#1f2650f2;backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 30px -10px #000c;animation:tin .3s cubic-bezier(.2,1.4,.4,1);font-size:14px;width:100%}
+.toast.big{border-color:var(--gold);background:#2a2410f2}
+.toast.out{animation:tout .3s forwards}
+.toast img{width:36px;height:36px;object-fit:contain}
+.toast span{flex:1}
+.toast button{border:0;background:#ffffff14;color:var(--text);border-radius:9px;padding:5px 10px;cursor:pointer;font-size:13px}
+@keyframes tin{from{opacity:0;transform:translateY(16px) scale(.96)}}
+@keyframes tout{to{opacity:0;transform:translateY(10px)}}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:70;width:100%;height:100%}
+.celebrate{position:fixed;inset:0;z-index:65;display:grid;place-items:center;background:#05061099;backdrop-filter:blur(4px);cursor:pointer;animation:tin .3s}
+.celebrate[hidden]{display:none}
+.celebrate .box{text-align:center;padding:30px;max-width:520px}
+.celebrate svg{width:120px;height:120px;animation:spinball 1.2s cubic-bezier(.3,1.4,.5,1)}
+@keyframes spinball{from{transform:scale(0) rotate(-540deg)}}
+.celebrate h3{font-family:"Press Start 2P",monospace;font-size:22px;line-height:1.5;color:var(--gold);margin:22px 0 10px;text-shadow:0 0 22px #ffd24a88}
+.celebrate p{color:var(--text);font-size:17px;margin:0}
+.celebrate small{display:block;color:var(--dim);margin-top:18px}
+
+[hidden]{display:none!important}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr}
+  .partner{flex-direction:row;text-align:left;padding:14px 18px}
+  .partner .stage{width:110px;height:110px}
+  .partner img{width:100px;height:100px}
+  .lnav{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .panel{padding:18px}
+  .tools{position:static;margin-top:14px;flex-wrap:wrap}
+  .score-num{font-size:42px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .lnav{gap:10px}
+  .lcard{padding:10px;gap:10px;min-width:0}
+  .lcard small{font-size:11px}
+  .ring{width:48px;height:48px}
+  .route{max-width:none}
+  .mons{grid-template-columns:repeat(auto-fit,minmax(96px,1fr))}
+  .seg-group{overflow-x:auto;max-width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="pokeball" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#f4f4f8" stroke="#111" stroke-width="6"/><path d="M4 50a46 46 0 0 1 92 0z" fill="#ff3b4a" stroke="#111" stroke-width="6"/><circle cx="50" cy="50" r="15" fill="#f4f4f8" stroke="#111" stroke-width="6"/><circle cx="50" cy="50" r="6" fill="#fff" stroke="#bbb" stroke-width="2"/></symbol>
+</svg>
+
+<header class="hero wrap" id="hero">
+  <div class="hero-grid">
+    <div class="panel">
+      <div class="brand">
+        <svg><use href="#pokeball"/></svg>
+        <div>
+          <h1>Rota Pokelog <span class="pixel">ATK 5</span></h1>
+          <p>Guia de Hegress · Sun · Arkham — meta de +10% Attack</p>
+        </div>
+      </div>
+      <div class="tools">
+        <button class="icon-btn" data-act="anim" id="animBtn" title="Alternar estilo dos sprites"></button>
+        <button class="icon-btn" data-act="export" title="Baixar backup do progresso">⬇ Backup</button>
+        <button class="icon-btn" data-act="import" title="Restaurar backup">⬆ Restaurar</button>
+        <button class="icon-btn" data-act="reset" id="resetBtn" title="Zerar progresso">↺ Zerar</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+
+      <div class="score">
+        <div class="score-num"><span id="pts">0</span><small>/ <span id="goalTxt"></span> pts</small></div>
+        <div class="score-msg" id="scoreMsg"></div>
+      </div>
+
+      <div class="xp" id="xp">
+        <div class="segs" id="segs"></div>
+        <div class="xp-goal" id="xpGoal"><span>🎯 ATK 5</span></div>
+      </div>
+      <div class="xp-legend"><span>0</span><span id="maxPts"></span></div>
+      <div class="xp-key" id="xpKey"></div>
+
+      <div class="stats">
+        <div class="stat"><small>📘 Pokelogs</small><b id="stDone">0</b></div>
+        <div class="stat"><small>✨ Primeiros shinies</small><b id="stShiny">0</b></div>
+        <div class="stat"><small>🗺️ Rotas completas</small><b id="stRoutes">0</b></div>
+        <div class="stat"><small>⏱️ Tempo restante*</small><b id="stTime">—</b></div>
+      </div>
+    </div>
+
+    <div class="panel partner" id="partner"></div>
+  </div>
+
+  <nav class="lnav" id="lnav"></nav>
+  <section class="next" id="next"></section>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      <input id="q" type="search" placeholder="Buscar pokémon ou rota…" autocomplete="off">
+      <kbd>/</kbd>
+    </label>
+    <div class="seg-group" id="layerSeg"></div>
+    <div class="seg-group" id="statusSeg">
+      <button data-act="status" data-v="all">Todos</button>
+      <button data-act="status" data-v="pend">Pendentes</button>
+      <button data-act="status" data-v="done">Feitos</button>
+      <button data-act="status" data-v="shiny">Falta shiny</button>
+    </div>
+    <button class="chip" data-act="flag" data-v="s" title="Rotas com Arcane Shard">💎 Shard</button>
+    <button class="chip" data-act="flag" data-v="i" title="Rotas em Instância">⚔️ Instância</button>
+    <button class="chip" data-act="flag" data-v="*" title="Shiny vale a pena">⭐ Shiny</button>
+    <button class="chip" data-act="flag" data-v="t" title="Com tempo médio informado">⏱️ Tempo</button>
+  </div>
+</div>
+
+<main class="wrap" id="main">
+  <div class="empty" id="empty" hidden><div class="big">🔍</div>Nenhuma rota com esses filtros.</div>
+</main>
+
+<footer>
+  <p>Conteúdo do <b>📘 Guia de Pokelogs para ATK 5</b> — por Hegress (Sun · Arkham). Sprites via <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>.</p>
+  <p id="footNote"></p>
+  <p>Progresso salvo só neste navegador (localStorage). Use <b>⬇ Backup</b> para guardar uma cópia. * Tempo estimado somando as rotas pendentes que têm tempo médio no guia.</p>
+</footer>
+
+<div class="toasts" id="toasts"></div>
+<div class="celebrate" id="celebrate" hidden><div class="box"><svg><use href="#pokeball"/></svg><h3 id="celTitle"></h3><p id="celSub"></p><small>clique para continuar</small></div></div>
+<canvas id="confetti"></canvas>
+
+<script>
+const MONS = {"caterpie":[10,["bug"]],"pineco":[204,["bug"]],"weedle":[13,["bug","poison"]],"flabebe":[669,["fairy"]],"cleffa":[173,["fairy"]],"igglybuff":[174,["normal","fairy"]],"oddish":[43,["grass","poison"]],"paras":[46,["bug","grass"]],"pidgey":[16,["normal","flying"]],"rattata":[19,["normal"]],"spearow":[21,["normal","flying"]],"abra":[63,["psychic"]],"drowzee":[96,["psychic"]],"aipom":[190,["normal"]],"combee":[415,["bug","flying"]],"chimchar":[390,["fire"]],"clefairy":[35,["fairy"]],"jigglypuff":[39,["normal","fairy"]],"cubone":[104,["ground"]],"sandshrew":[27,["ground"]],"phanpy":[231,["ground"]],"cranidos":[408,["rock"]],"diglett":[50,["ground"]],"eevee":[133,["normal"]],"floette":[670,["fairy"]],"meowth":[52,["normal"]],"snubbull":[209,["fairy"]],"gastly":[92,["ghost","poison"]],"geodude":[74,["rock","ground"]],"gible":[443,["dragon","ground"]],"charmander":[4,["fire"]],"growlithe":[58,["fire"]],"cyndaquil":[155,["fire"]],"houndour":[228,["dark","fire"]],"deino":[633,["dark","dragon"]],"krabby":[98,["water"]],"larvitar":[246,["rock","ground"]],"magnemite":[81,["electric","steel"]],"magby":[240,["fire"]],"mareep":[179,["electric"]],"pichu":[172,["electric"]],"natu":[177,["psychic","flying"]],"ponyta":[77,["fire"]],"rhyhorn":[111,["ground","rock"]],"shieldon":[410,["rock","steel"]],"shinx":[403,["electric"]],"skiddo":[672,["grass"]],"slowpoke":[79,["water","psychic"]],"slugma":[218,["fire"]],"snover":[459,["grass","ice"]],"spinarak":[167,["bug","poison"]],"squirtle":[7,["water"]],"starly":[396,["normal","flying"]],"totodile":[158,["water"]],"marill":[183,["water","fairy"]],"swinub":[220,["ice","ground"]],"smoochum":[238,["ice","psychic"]],"timburr":[532,["fighting"]],"togepi":[175,["fairy"]],"trubbish":[568,["poison"]],"turtwig":[387,["grass"]],"voltorb":[100,["electric"]],"vulpix":[37,["fire"]],"wurmple":[265,["bug"]],"wooper":[194,["water","ground"]],"aron":[304,["steel","rock"]],"bagon":[371,["dragon"]],"baltoy":[343,["ground","psychic"]],"beldum":[374,["steel","psychic"]],"barboach":[339,["water","ground"]],"charmeleon":[5,["fire"]],"cacnea":[331,["grass"]],"corphish":[341,["water"]],"croconaw":[159,["water"]],"dratini":[147,["dragon"]],"duskull":[355,["ghost"]],"farfetchd":[83,["normal","flying"]],"fearow":[22,["normal","flying"]],"gabite":[444,["dragon","ground"]],"graveler":[75,["rock","ground"]],"grotle":[388,["grass"]],"gurdurr":[533,["fighting"]],"kadabra":[64,["psychic"]],"lotad":[270,["water","grass"]],"luxio":[404,["electric"]],"machoke":[67,["fighting"]],"meditite":[307,["fighting","psychic"]],"monferno":[391,["fire","fighting"]],"murkrow":[198,["dark","flying"]],"numel":[322,["fire","ground"]],"parasect":[47,["bug","grass"]],"pidgeotto":[17,["normal","flying"]],"pikachu":[25,["electric"]],"poochyena":[261,["dark"]],"raticate":[20,["normal"]],"quilava":[156,["fire"]],"ralts":[280,["psychic","fairy"]],"shuckle":[213,["bug","rock"]],"shuppet":[353,["ghost"]],"slowbro":[80,["water","psychic"]],"snorunt":[361,["ice"]],"spheal":[363,["ice","water"]],"staravia":[397,["normal","flying"]],"swablu":[333,["normal","flying"]],"taillow":[276,["normal","flying"]],"torchic":[255,["fire"]],"trapinch":[328,["ground"]],"treecko":[252,["grass"]],"tyrogue":[236,["fighting"]],"whismur":[293,["normal"]],"yanma":[193,["bug","flying"]],"ariados":[168,["bug","poison"]],"carvanha":[318,["water","dark"]],"chansey":[113,["normal"]],"clefable":[36,["fairy"]],"cloyster":[91,["water","ice"]],"combusken":[256,["fire","fighting"]],"dewgong":[87,["water","ice"]],"dodrio":[85,["normal","flying"]],"dragonair":[148,["dragon"]],"dugtrio":[51,["ground"]],"electrode":[101,["electric"]],"espeon":[196,["psychic"]],"golduck":[55,["water"]],"grovyle":[253,["grass"]],"gulpin":[316,["poison"]],"hitmonchan":[107,["fighting"]],"hitmonlee":[106,["fighting"]],"hitmontop":[237,["fighting"]],"hypno":[97,["psychic"]],"kirlia":[281,["psychic","fairy"]],"lairon":[305,["steel","rock"]],"lombre":[271,["water","grass"]],"loudred":[294,["normal"]],"makuhita":[296,["fighting"]],"marowak":[105,["ground"]],"marshtomp":[259,["water","ground"]],"metang":[375,["steel","psychic"]],"noctowl":[164,["normal","flying"]],"persian":[53,["normal"]],"politoed":[186,["water"]],"primeape":[57,["fighting"]],"pupitar":[247,["rock","ground"]],"quagsire":[195,["water","ground"]],"riolu":[447,["fighting"]],"sandslash":[28,["ground"]],"sealeo":[364,["ice","water"]],"shelgon":[372,["dragon"]],"sneasel":[215,["dark","ice"]],"starmie":[121,["water","psychic"]],"tangela":[114,["grass"]],"togetic":[176,["fairy","flying"]],"umbreon":[197,["dark"]],"venomoth":[49,["bug","poison"]],"vibrava":[329,["ground","dragon"]],"wailmer":[320,["water"]],"wigglytuff":[40,["normal","fairy"]]};
+
+// [flags, pokémons que contam, tempo, observação, também avança]
+// flags: s = Arcane Shard, i = Instância, * = vale o shiny
+const LAYERS = [
+  {key:'l1', short:'1k', name:'1k Mobs', hex:'#3ddc84', raw:[
+    ['s','caterpie pineco weedle','','Arcane Shard Pineco · 100 pokes'],
+    ['s','cleffa flabebe igglybuff','','Arcane Shard Flabébé · 94 pokes'],
+    ['i*','oddish'],
+    ['','paras','','Junto com Parasect','parasect'],
+    ['s','pidgey spearow','','Arcane Shard Pidgey · 103 pokes'],
+    ['i*','rattata'],
+  ]},
+  {key:'l2', short:'1.5k', name:'1.5k Mobs', hex:'#ffcb05', raw:[
+    ['s','abra drowzee','','Arcane Shard Abra'],
+    ['s','aipom','','Arcane Shard Persian + Raticate · 77 pokes','persian raticate'],
+    ['','chimchar','15-20 min'],
+    ['i','combee','20 min'],
+    ['','clefairy jigglypuff','50 min'],
+    ['s','cubone sandshrew phanpy','','Arcane Shard Cubone · 50 pokes'],
+    ['i','cranidos','15-20 min'],
+    ['i','diglett'],
+    ['s','eevee meowth','','Arcane Shard Meowth · 77 pokes','rattata'],
+    ['s','floette snubbull','','Arcane Shard Floette'],
+    ['s','gastly','30 min','Arcane Shard · 57 pokes'],
+    ['i*','geodude'],
+    ['i','gible','20 min'],
+    ['s','growlithe cyndaquil charmander','','Arcane Shard Cyndaquil · 50 pokes'],
+    ['s','houndour deino','','Arcane Shard Deino · 90 pokes'],
+    ['','krabby'],
+    ['','larvitar'],
+    ['i*','magnemite'],
+    ['','magby'],
+    ['s','mareep pichu','35-40 min','Arcane Shard · 51 pokes'],
+    ['','natu','15-20 min'],
+    ['','ponyta'],
+    ['','rhyhorn'],
+    ['i','shieldon','20 min'],
+    ['','shinx','15-20 min'],
+    ['','skiddo','20-25 min'],
+    ['','slowpoke'],
+    ['','slugma','','Junto com Quilava','quilava'],
+    ['i','snover','20 min'],
+    ['*','spinarak','15 min'],
+    ['i','starly','20 min'],
+    ['s','squirtle totodile marill','~1h20'],
+    ['s','swinub smoochum','','Arcane Shard Swinub · 90 pokes'],
+    ['i','timburr','15 min'],
+    ['','togepi','','Junto com Togetic','togetic'],
+    ['','trubbish','15-20 min'],
+    ['','turtwig','15 min'],
+    ['i','voltorb','30 min'],
+    ['','vulpix'],
+    ['','wooper','20-25 min'],
+    ['','wurmple','20 min'],
+  ]},
+  {key:'l3', short:'3k', name:'3k Mobs', hex:'#4d9dff', raw:[
+    ['','aron'],['','bagon','35 min'],['','baltoy','30 min'],['','barboach','40 min'],['','beldum','30 min'],
+    ['','cacnea','40 min'],['','charmeleon'],['','corphish','40-45 min'],['','croconaw'],
+    ['s','dratini','','Arcane Shard · 43 pokes'],
+    ['','duskull','30-35 min'],['i','farfetchd','30 min'],['','fearow'],['','gabite','30-35 min'],['i','graveler'],
+    ['','grotle','30 min'],['i','gurdurr','30 min'],['','kadabra'],['','lotad','25 min'],['','luxio'],
+    ['','machoke'],['','meditite','25 min'],['','monferno','30-35 min'],['','murkrow'],['','numel','30 min'],
+    ['i','parasect','','','paras'],['','pidgeotto'],['i','pikachu','35-40 min'],['','poochyena'],
+    ['','quilava','','Junto com Slugma','slugma'],['','ralts'],
+    ['s','raticate','','Arcane Shard Persian'],
+    ['','shuckle'],['','shuppet'],['','slowbro'],['','snorunt'],['','spheal'],['i','staravia','30 min'],
+    ['','swablu','30 min'],['i','taillow','25 min'],['','torchic','25 min'],['','trapinch','40-45 min'],
+    ['','treecko','30 min'],['','tyrogue','30 min'],['','whismur','25 min'],['','yanma','45-50 min'],
+  ]},
+  {key:'l4', short:'4k', name:'4k Mobs', hex:'#ff5a6a', raw:[
+    ['','ariados'],['','carvanha','45 min'],['','chansey','45-50 min'],['','clefable'],['','cloyster','45-50 min'],
+    ['','combusken','40 min'],['','dewgong'],['i','dodrio','40 min'],['i','dragonair'],['i','dugtrio','40 min'],
+    ['i','electrode'],['','espeon'],['','golduck'],['','grovyle','35 min'],['','gulpin'],
+    ['i','hitmonchan','40-45 min'],['i','hitmonlee','40-45 min'],['i','hitmontop','40-45 min'],
+    ['','hypno','','Outland'],['','kirlia'],['','lairon'],['','lombre','40 min'],['','loudred'],['','makuhita'],
+    ['i','marowak','45-50 min'],['','marshtomp','45 min'],['i','metang'],['i','noctowl'],['','persian'],
+    ['i','politoed'],['','primeape'],['i','pupitar'],['','quagsire','45-50 min'],['','riolu'],
+    ['i','sandslash','50 min'],['','sealeo','30-35 min'],['','shelgon'],['','sneasel'],['i','starmie'],
+    ['i','tangela'],['','togetic','','Junto com Togepi','togepi'],['i','umbreon'],['i','venomoth'],
+    ['','vibrava'],['','wailmer'],['','wigglytuff'],
+  ]},
+];
+
+const GOAL = 1600, PT_DONE = 10, PT_SHINY = 2;
+const DOC = {pokelogs:164, points:1968};
+const TC = {normal:'#A8A77A',fire:'#EE8130',water:'#6390F0',electric:'#F7D02C',grass:'#7AC74C',ice:'#96D9D6',fighting:'#C22E28',poison:'#A33EA1',ground:'#E2BF65',flying:'#A98FF3',psychic:'#F95587',bug:'#A6B91A',rock:'#B6A136',ghost:'#735797',dragon:'#6F35FC',dark:'#705746',steel:'#B7B7CE',fairy:'#D685AD'};
+const TN = {normal:'Normal',fire:'Fogo',water:'Água',electric:'Elétrico',grass:'Planta',ice:'Gelo',fighting:'Lutador',poison:'Veneno',ground:'Terra',flying:'Voador',psychic:'Psíquico',bug:'Inseto',rock:'Pedra',ghost:'Fantasma',dragon:'Dragão',dark:'Sombrio',steel:'Aço',fairy:'Fada'};
+const NAMES = {flabebe:'Flabébé',farfetchd:"Farfetch'd"};
+const SPR = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+const nm = s => NAMES[s] || s[0].toUpperCase() + s.slice(1);
+const fmt = n => n.toLocaleString('pt-BR');
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+
+function parseTime(t){
+  if(!t) return 0;
+  let m = t.match(/(\d+)\s*h\s*(\d+)?/);
+  if(m) return +m[1]*60 + (+m[2]||0);
+  m = t.match(/(\d+)(?:\s*-\s*(\d+))?\s*min/);
+  return m ? (m[2] ? (+m[1] + +m[2]) / 2 : +m[1]) : 0;
+}
+const fmtMin = m => { m = Math.round(m); const h = Math.floor(m/60); return h ? `${h}h${String(m%60).padStart(2,'0')}` : `${m} min`; };
+
+/* ---------- data model ---------- */
+const HOME = {}, ROUTES = [];
+LAYERS.forEach(L => {
+  L.routes = L.raw.map(([f, m, t, n, a], i) => {
+    const R = {L, i:i+1, id:`r-${L.key}-${i+1}`, s:f.includes('s'), inst:f.includes('i'), star:f.includes('*'),
+      mons:m.split(' '), time:t||'', mins:parseTime(t), note:n||'', also:a ? a.split(' ') : []};
+    R.mons.forEach(s => HOME[s] = L);
+    ROUTES.push(R);
+    return R;
+  });
+  L.mons = L.routes.flatMap(R => R.mons);
+  L.max = L.mons.length * (PT_DONE + PT_SHINY);
+});
+const ALL = Object.keys(HOME);
+const MAX = ALL.length * (PT_DONE + PT_SHINY);
+
+/* ---------- storage ---------- */
+const KEY = 'pokelog-atk5:v1';
+const DEF_F = {layer:'all', status:'all', flags:[]};
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if(s && s.m) return {m:s.m, prefs:{anim:true, ...s.prefs, f:{...DEF_F, ...(s.prefs||{}).f}}};
+  }catch(e){}
+  return {m:{}, prefs:{anim:true, f:{...DEF_F}}};
+}
+let state = load();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify({...state, updated:Date.now()})); }catch(e){} }
+const st = s => state.m[s] || {};
+const points = () => ALL.reduce((p, s) => p + (st(s).d ? PT_DONE : 0) + (st(s).s ? PT_SHINY : 0), 0);
+const routeDone = R => R.mons.every(s => st(s).d);
+const layerDone = L => L.mons.every(s => st(s).d);
+
+/* ---------- sprites ---------- */
+function src(s, shiny, anim){
+  const id = MONS[s][0];
+  return anim ? `${SPR}/other/showdown/${shiny?'shiny/':''}${id}.gif`
+              : `${SPR}/other/official-artwork/${shiny?'shiny/':''}${id}.png`;
+}
+function setImg(img, s, shiny){
+  const want = src(s, shiny, state.prefs.anim);
+  if(img.dataset.want === want) return;
+  img.dataset.want = want; img.dataset.sh = shiny ? 1 : 0; delete img.dataset.fb;
+  img.src = want;
+}
+document.addEventListener('error', e => {
+  const i = e.target;
+  if(i.tagName === 'IMG' && i.dataset.s && !i.dataset.fb){ i.dataset.fb = 1; i.src = src(i.dataset.s, i.dataset.sh === '1', false); }
+}, true);
+
+/* ---------- build DOM ---------- */
+const ball = '<svg class="ball"><use href="#pokeball"/></svg>';
+function tile(s){
+  const [id, types] = MONS[s];
+  return `<div class="mon" data-slug="${s}" style="--type:${TC[types[0]]}">
+    <button class="sprite" data-act="d" title="Marcar pokelog de ${nm(s)}"><img alt="${nm(s)}" data-s="${s}" loading="lazy">${ball}
+      <span class="spark s1">✦</span><span class="spark s2">✦</span><span class="spark s3">✧</span></button>
+    <div class="mon-name">${nm(s)}<small>#${String(id).padStart(3,'0')}</small></div>
+    <div class="types">${types.map(t => `<i style="--c:${TC[t]}">${TN[t]}</i>`).join('')}</div>
+    <div class="mbtns"><button class="chk" data-act="d" title="Pokelog completo (+${PT_DONE})"><span class="box"></span>Pokelog</button><button class="shy" data-act="s" title="Primeiro shiny (+${PT_SHINY})">✨ Shiny</button></div>
+  </div>`;
+}
+function routeHTML(R){
+  const b = [];
+  if(R.s) b.push('<span class="badge s">💎 Arcane Shard</span>');
+  if(R.inst) b.push('<span class="badge i">⚔️ Instância</span>');
+  if(R.star) b.push('<span class="badge st">⭐ Vale o shiny</span>');
+  if(R.time) b.push(`<span class="badge t">⏱️ ${R.time}</span>`);
+  const also = R.also.length ? `<div class="also">Também avança:${R.also.map(s =>
+    `<button class="alsochip" data-slug="${s}" data-act="d" title="${nm(s)} conta em ${HOME[s].name}"><img alt="" data-s="${s}" loading="lazy">${nm(s)}<em>${HOME[s].short}</em></button>`).join('')}</div>` : '';
+  return `<article class="route" id="${R.id}" style="--n:${R.mons.length}">
+    <div class="rhead"><span class="rnum">#${R.i}</span>${b.join('')}<span class="rcheck">✓</span></div>
+    ${R.note ? `<p class="note">${R.note}</p>` : ''}
+    <div class="mons">${R.mons.map(tile).join('')}</div>${also}
+  </article>`;
+}
+const main = $('#main');
+LAYERS.forEach(L => {
+  const sec = document.createElement('section');
+  sec.className = 'layer'; sec.id = 'sec-' + L.key; sec.style.setProperty('--lc', L.hex);
+  sec.innerHTML = `<div class="layer-head">
+      <div><h2><span class="pixel">${L.short}</span>Pokelogs de ${L.name}</h2>
+      <div class="sub">${L.mons.length} pokelogs · ${L.routes.length} rotas · até ${fmt(L.max)} pts</div></div>
+      <div class="lh-prog"><div class="bar"><i></i></div><span></span></div>
+    </div><div class="routes">${L.routes.map(routeHTML).join('')}</div>`;
+  main.insertBefore(sec, $('#empty'));
+  L.sec = sec; L.bar = sec.querySelector('.bar i'); L.cnt = sec.querySelector('.lh-prog span');
+  L.routes.forEach(R => R.el = sec.querySelector('#' + R.id));
+
+  const c = document.createElement('button');
+  c.className = 'lcard'; c.dataset.act = 'layer'; c.dataset.v = L.key; c.style.setProperty('--lc', L.hex);
+  c.innerHTML = `<div class="ring"><svg viewBox="0 0 70 70"><circle class="bg" cx="35" cy="35" r="29"/><circle class="fg" cx="35" cy="35" r="29" stroke-dasharray="182.2" stroke-dashoffset="182.2"/></svg><span>0%</span></div>
+    <div><b>${L.name}</b><small></small></div><span class="crown">👑</span>`;
+  $('#lnav').append(c); L.card = c;
+
+  const seg = document.createElement('div');
+  seg.className = 'seg'; seg.style.background = L.hex; $('#segs').append(seg); L.seg = seg;
+  $('#xpKey').insertAdjacentHTML('beforeend', `<span><i style="background:${L.hex}"></i>${L.name}</span>`);
+  $('#layerSeg').insertAdjacentHTML('beforeend', `<button data-act="layer" data-v="${L.key}">${L.short}</button>`);
+});
+$('#layerSeg').insertAdjacentHTML('afterbegin', '<button data-act="layer" data-v="all">Todas</button>');
+$('#goalTxt').textContent = fmt(GOAL);
+$('#maxPts').textContent = fmt(MAX) + ' pts';
+$('#xpGoal').style.left = (GOAL / MAX * 100) + '%';
+$('#footNote').textContent = ALL.length !== DOC.pokelogs
+  ? `O guia anuncia ${DOC.pokelogs} pokelogs / ${fmt(DOC.points)} pts; contando os pokémons listados nele são ${ALL.length} únicos (${fmt(MAX)} pts), ainda ${fmt(MAX - GOAL)} acima da meta. Os totais aqui usam a contagem real.`
+  : '';
+
+/* ---------- render ---------- */
+let shownPts = null;
+function countTo(el, to){
+  if(RM || shownPts === null){ el.textContent = fmt(to); shownPts = to; return; }
+  const from = shownPts, t0 = performance.now(); shownPts = to;
+  const step = t => { const k = Math.min(1, (t - t0) / 600), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(Math.round(from + (to - from) * e)); if(k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function refresh(){
+  document.querySelectorAll('.mon,.alsochip').forEach(el => {
+    const s = el.dataset.slug, m = st(s);
+    el.classList.toggle('done', !!m.d);
+    el.classList.toggle('shiny', !!m.s);
+    setImg(el.querySelector('img'), s, !!m.s);
+  });
+  ROUTES.forEach(R => {
+    R.el.classList.toggle('done', routeDone(R));
+    R.el.classList.toggle('perfect', R.mons.every(s => st(s).d && st(s).s));
+  });
+
+  const pts = points();
+  let done = 0, shiny = 0;
+  LAYERS.forEach(L => {
+    const d = L.mons.filter(s => st(s).d).length, sh = L.mons.filter(s => st(s).s).length;
+    const p = d * PT_DONE + sh * PT_SHINY;
+    done += d; shiny += sh;
+    L.bar.style.width = (d / L.mons.length * 100) + '%';
+    L.cnt.textContent = `${d}/${L.mons.length}`;
+    L.seg.style.width = (p / MAX * 100) + '%';
+    L.card.querySelector('.fg').style.strokeDashoffset = 182.2 * (1 - d / L.mons.length);
+    L.card.querySelector('.ring span').textContent = Math.round(d / L.mons.length * 100) + '%';
+    L.card.querySelector('small').textContent = `${d}/${L.mons.length} · ${fmt(p)}/${fmt(L.max)} pts`;
+    L.card.classList.toggle('full', d === L.mons.length);
+  });
+
+  countTo($('#pts'), pts);
+  const left = GOAL - pts;
+  $('#hero').classList.toggle('goal', left <= 0);
+  $('#scoreMsg').innerHTML = left > 0
+    ? `Faltam <b>${fmt(left)} pts</b> para o ATK 5 · ≈ ${Math.ceil(left / (PT_DONE + PT_SHINY))} pokelogs com shiny`
+    : `🏆 <b>ATK 5 alcançado!</b> ${left < 0 ? `+${fmt(-left)} pts além da meta` : 'na conta exata'}`;
+  $('#stDone').innerHTML = `${done}<em> / ${ALL.length}</em>`;
+  $('#stShiny').innerHTML = `${shiny}<em> / ${ALL.length}</em>`;
+  $('#stRoutes').innerHTML = `${ROUTES.filter(routeDone).length}<em> / ${ROUTES.length}</em>`;
+  const pend = ROUTES.filter(R => !routeDone(R));
+  const mins = pend.reduce((a, R) => a + R.mins, 0);
+  $('#stTime').innerHTML = pend.length ? `~${fmtMin(mins)}<em> (${pend.filter(R => R.mins).length} rotas)</em>` : '🎉';
+
+  renderPartner(); renderNext(); renderControls();
+  $('#animBtn').textContent = state.prefs.anim ? '🎞️ Animados' : '🖼️ Artwork';
+  document.body.classList.toggle('art', !state.prefs.anim);
+}
+
+let partnerKey = null;
+function renderPartner(){
+  let best = null;
+  for(const s of ALL){ const m = st(s), t = Math.max(m.d || 0, m.s || 0); if(t && (!best || t > best.t)) best = {s, t, sh:!!m.s}; }
+  const key = best ? best.s + best.sh : '';
+  if(key === partnerKey) return; partnerKey = key;
+  const p = $('#partner');
+  if(!best){ p.style.removeProperty('--pc'); p.innerHTML = `<svg class="ph"><use href="#pokeball"/></svg><div><small>Nenhum registro ainda</small><div class="when">Clique num pokémon para marcar seu primeiro pokelog</div></div>`; return; }
+  const [id, types] = MONS[best.s];
+  p.style.setProperty('--pc', TC[types[0]]);
+  const when = new Date(best.t).toLocaleString('pt-BR', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'});
+  p.innerHTML = `<div class="stage"><img alt="${nm(best.s)}" src="${src(best.s, best.sh, false)}"></div>
+    <div><small>Último registro</small><br><b>${nm(best.s)}${best.sh ? ' ✨' : ''}</b><div class="when">#${String(id).padStart(3,'0')} · ${HOME[best.s].name} · ${when}</div></div>`;
+}
+
+function renderNext(){
+  const el = $('#next');
+  let pick = null;
+  for(const L of LAYERS){
+    const pend = L.routes.filter(R => !routeDone(R));
+    if(!pend.length) continue;
+    pick = pend.find(R => R.s) || pend[0]; break;
+  }
+  if(!pick){ el.innerHTML = `<span class="lbl">Rota completa</span><div class="body"><div class="txt"><b>Todos os pokelogs concluídos! 👑</b><div>Que tal fechar os shinies que faltam?</div></div></div>`; return; }
+  const left = pick.mons.filter(s => !st(s).d);
+  el.innerHTML = `<span class="lbl">Próxima rota sugerida</span>
+    <div class="body"><div class="minis">${left.map(s => `<img alt="${nm(s)}" src="${src(s, false, false)}">`).join('')}</div>
+    <div class="txt"><b>${left.map(nm).join(' + ')}</b>
+    <div>${pick.L.name} · rota #${pick.i}${pick.s ? ' · 💎 Arcane Shard' : ''}${pick.inst ? ' · ⚔️ Instância' : ''}${pick.time ? ' · ⏱️ ' + pick.time : ''}${pick.note && !pick.note.startsWith('Arcane') ? ' · ' + pick.note : ''}</div></div></div>
+    <button class="go" data-act="goto" data-v="${pick.id}">Ver rota →</button>`;
+}
+
+function renderControls(){
+  const f = state.prefs.f;
+  document.querySelectorAll('[data-act=layer]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === f.layer));
+  document.querySelectorAll('[data-act=status]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === f.status));
+  document.querySelectorAll('[data-act=flag]').forEach(b => b.setAttribute('aria-pressed', f.flags.includes(b.dataset.v)));
+}
+
+function applyFilters(){
+  const f = state.prefs.f, q = norm($('#q').value.trim());
+  ROUTES.forEach(R => {
+    let v = f.layer === 'all' || R.L.key === f.layer;
+    if(v && f.flags.length) v = f.flags.every(x => x === 's' ? R.s : x === 'i' ? R.inst : x === '*' ? R.star : !!R.time);
+    if(v && f.status !== 'all'){
+      const m = R.mons.map(st);
+      v = f.status === 'pend' ? m.some(x => !x.d) : f.status === 'done' ? m.every(x => x.d) : m.some(x => !x.s);
+    }
+    if(v && q) v = [...R.mons, ...R.also].some(s => norm(nm(s)).includes(q)) || norm(R.note).includes(q);
+    R.el.hidden = !v;
+    R.el.querySelectorAll('.mon').forEach(t => t.classList.toggle('hit', !!q && norm(nm(t.dataset.slug)).includes(q)));
+  });
+  LAYERS.forEach(L => L.sec.hidden = !L.routes.some(R => !R.el.hidden));
+  $('#empty').hidden = ROUTES.some(R => !R.el.hidden);
+}
+
+/* ---------- feedback ---------- */
+function toast(html, opts = {}){
+  const t = document.createElement('div');
+  t.className = 'toast' + (opts.big ? ' big' : '');
+  t.innerHTML = (opts.img ? `<img alt="" src="${opts.img}">` : '') + `<span>${html}</span>`;
+  if(opts.undo){
+    const b = document.createElement('button'); b.textContent = 'Desfazer';
+    b.onclick = () => { opts.undo(); t.remove(); }; t.append(b);
+  }
+  const box = $('#toasts'); box.append(t);
+  while(box.children.length > 4) box.firstChild.remove();
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, opts.big ? 5000 : 3500);
+}
+
+const cv = $('#confetti'), cx = cv.getContext('2d');
+let parts = [], raf = 0;
+function sizeCanvas(){ const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
+addEventListener('resize', sizeCanvas); sizeCanvas();
+function burst(x, y, n, colors, power = 1){
+  if(RM) return;
+  for(let k = 0; k < n; k++){
+    const a = Math.random() * Math.PI * 2, v = (2 + Math.random() * 6) * power;
+    parts.push({x, y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - 4 * power, life:50 + Math.random() * 50,
+      c:colors[k % colors.length], w:4 + Math.random() * 5, h:3 + Math.random() * 4, r:Math.random() * 6, vr:(Math.random() - .5) * .4, star:Math.random() < .25});
+  }
+  if(!raf) raf = requestAnimationFrame(tick);
+}
+function tick(){
+  cx.clearRect(0, 0, innerWidth, innerHeight);
+  parts = parts.filter(p => p.life-- > 0);
+  for(const p of parts){
+    p.vy += .22; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.globalAlpha = Math.min(1, p.life / 25); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c;
+    if(p.star){ cx.font = `${p.w * 3}px serif`; cx.fillText('✦', 0, 0); } else cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    cx.restore();
+  }
+  raf = parts.length ? requestAnimationFrame(tick) : 0;
+}
+const GOLD = ['#ffd24a', '#fff3b0', '#ffb347', '#ffffff'];
+function celebrate(title, sub){
+  $('#celTitle').textContent = title; $('#celSub').textContent = sub;
+  const c = $('#celebrate'); c.hidden = false;
+  const colors = ['#ff3b4a', '#ffd24a', '#3ddc84', '#4d9dff', '#ffffff', '#c58bff'];
+  burst(innerWidth * .2, innerHeight * .6, 90, colors, 1.6);
+  setTimeout(() => burst(innerWidth * .8, innerHeight * .6, 90, colors, 1.6), 250);
+  setTimeout(() => burst(innerWidth * .5, innerHeight * .4, 120, colors, 1.9), 500);
+  clearTimeout(celebrate.t); celebrate.t = setTimeout(() => c.hidden = true, 6000);
+}
+$('#celebrate').onclick = e => e.currentTarget.hidden = true;
+
+/* ---------- actions ---------- */
+let filterTimer = 0;
+function setMark(s, k, on){
+  const m = state.m[s] || (state.m[s] = {});
+  if(on) m[k] = Date.now(); else delete m[k];
+  if(!m.d && !m.s) delete state.m[s];
+  save(); refresh();
+  clearTimeout(filterTimer); filterTimer = setTimeout(applyFilters, 1200);
+}
+function toggle(s, k, btn){
+  const on = !st(s)[k], L = HOME[s], R = ROUTES.find(r => r.mons.includes(s));
+  const before = {pts:points(), rd:routeDone(R), ld:layerDone(L)};
+  setMark(s, k, on);
+  const undo = () => setMark(s, k, !on);
+  if(!on){ toast(`<b>${nm(s)}</b>: ${k === 'd' ? 'pokelog' : 'shiny'} desmarcado (−${k === 'd' ? PT_DONE : PT_SHINY} pts)`, {undo}); return; }
+
+  document.querySelectorAll(`.mon[data-slug="${s}"]`).forEach(t => { t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop'); });
+  const r = btn.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const type = TC[MONS[s][1][0]];
+  burst(x, y, k === 's' ? 46 : 30, k === 's' ? GOLD : [type, L.hex, '#ffffff', '#ff3b4a']);
+  toast(k === 'd' ? `<b>+${PT_DONE} pts</b> · pokelog de <b>${nm(s)}</b> completo` : `<b>+${PT_SHINY} pts</b> · primeiro shiny de <b>${nm(s)}</b> ✨`,
+    {undo, img:src(s, k === 's', false)});
+
+  if(!before.rd && routeDone(R)){
+    toast(`🗺️ Rota #${R.i} de ${L.name} concluída!`, {big:true});
+    burst(x, y - 20, 60, [L.hex, '#ffffff', '#ffd24a'], 1.4);
+  }
+  if(!before.ld && layerDone(L)) setTimeout(() => celebrate(`${L.name} completo!`, `${L.mons.length} pokelogs de ${L.name} registrados 👑`), 300);
+  if(before.pts < GOAL && points() >= GOAL) setTimeout(() => celebrate('ATK 5 desbloqueado!', `${fmt(points())} pontos — +10% de Attack garantido 🏆`), 500);
+}
+
+let resetArm = 0;
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act]'); if(!a) return;
+  const host = a.closest('[data-slug]'), act = a.dataset.act, v = a.dataset.v, f = state.prefs.f;
+  if(host && (act === 'd' || act === 's')) return toggle(host.dataset.slug, act, a);
+  if(act === 'layer'){
+    f.layer = (a.classList.contains('lcard') && f.layer === v) ? 'all' : v;
+    save(); renderControls(); applyFilters();
+    if(a.classList.contains('lcard')) (f.layer === 'all' ? $('#main') : $('#sec-' + v)).scrollIntoView({block:'start'});
+  } else if(act === 'status'){ f.status = v; save(); renderControls(); applyFilters(); }
+  else if(act === 'flag'){ f.flags = f.flags.includes(v) ? f.flags.filter(x => x !== v) : [...f.flags, v]; save(); renderControls(); applyFilters(); }
+  else if(act === 'goto'){
+    const R = ROUTES.find(r => r.id === v);
+    if(R.el.hidden){ state.prefs.f = {...DEF_F}; $('#q').value = ''; save(); renderControls(); applyFilters(); }
+    R.el.scrollIntoView({block:'center'}); R.el.classList.remove('flash'); void R.el.offsetWidth; R.el.classList.add('flash');
+  } else if(act === 'anim'){ state.prefs.anim = !state.prefs.anim; save(); refresh(); }
+  else if(act === 'export'){
+    const blob = new Blob([JSON.stringify({app:'pokelog-atk5', version:1, exported:new Date().toISOString(), m:state.m}, null, 2)], {type:'application/json'});
+    const l = document.createElement('a'); l.href = URL.createObjectURL(blob);
+    l.download = `pokelog-atk5-backup-${new Date().toISOString().slice(0, 10)}.json`; l.click(); URL.revokeObjectURL(l.href);
+    toast('💾 Backup baixado');
+  } else if(act === 'import') $('#importFile').click();
+  else if(act === 'reset'){
+    if(!resetArm){
+      a.classList.add('warn'); a.textContent = 'Confirmar zerar?';
+      resetArm = setTimeout(() => { resetArm = 0; a.classList.remove('warn'); a.textContent = '↺ Zerar'; }, 3000);
+      return;
+    }
+    clearTimeout(resetArm); resetArm = 0; a.classList.remove('warn'); a.textContent = '↺ Zerar';
+    const old = state.m; state.m = {}; save(); refresh(); applyFilters();
+    toast('Progresso zerado', {undo:() => { state.m = old; save(); refresh(); applyFilters(); }});
+  }
+});
+$('#importFile').onchange = async e => {
+  const file = e.target.files[0]; if(!file) return;
+  try{
+    const d = JSON.parse(await file.text());
+    if(!d || typeof d.m !== 'object') throw 0;
+    state.m = Object.fromEntries(Object.entries(d.m).filter(([s]) => HOME[s]));
+    save(); refresh(); applyFilters(); toast(`✅ Backup restaurado (${points()} pts)`);
+  }catch(err){ toast('❌ Arquivo de backup inválido'); }
+  e.target.value = '';
+};
+$('#q').addEventListener('input', applyFilters);
+document.addEventListener('keydown', e => {
+  if(e.key === '/' && document.activeElement !== $('#q')){ e.preventDefault(); $('#q').focus(); }
+  else if(e.key === 'Escape'){ if(!$('#celebrate').hidden) $('#celebrate').hidden = true; else if(document.activeElement === $('#q')){ $('#q').value = ''; applyFilters(); $('#q').blur(); } }
+});
+addEventListener('storage', e => { if(e.key === KEY){ state = load(); refresh(); applyFilters(); } });
+
+refresh(); applyFilters();
+</script>
+</body>
+</html>

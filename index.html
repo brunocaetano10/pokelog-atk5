@@ -125,9 +125,27 @@ h1 .pixel{font-size:15px;color:var(--gold);vertical-align:middle;margin-left:6px
 .seg-group button{border:0;background:none;padding:7px 11px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:14px;white-space:nowrap;transition:.15s}
 .seg-group button:hover{color:var(--text)}
 .seg-group button[aria-pressed=true]{background:var(--card2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line2)}
-.chip{border:1px solid var(--line);background:#0a0d1c;border-radius:999px;padding:8px 12px;cursor:pointer;color:var(--muted);font-size:14px;transition:.15s;white-space:nowrap}
-.chip:hover{color:var(--text)}
-.chip[aria-pressed=true]{background:#ffd24a1f;border-color:var(--gold);color:var(--text)}
+.ms{position:relative}
+.ms-btn,.sort select,.clear-f{border:1px solid var(--line);background:#0a0d1c;border-radius:14px;padding:9px 12px;cursor:pointer;color:var(--muted);font:inherit;font-size:14px;white-space:nowrap;transition:.15s}
+.ms-btn:hover,.sort select:hover,.clear-f:hover{color:var(--text);border-color:var(--line2)}
+.ms-btn.on{background:#ffd24a1a;border-color:var(--gold);color:var(--text)}
+.ms-btn .sum{margin-left:4px}
+.ms-btn .car{margin-left:6px;opacity:.6;font-size:11px}
+.ms-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:40;width:max-content;min-width:230px;max-width:calc(100vw - 32px);max-height:60vh;overflow:auto;
+  background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:6px;box-shadow:0 18px 40px -12px #000d}
+.ms-pop.wide{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr));min-width:280px}
+.ms-pop label{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--text)}
+.ms-pop label:hover{background:#ffffff0d}
+.ms-pop label small{margin-left:auto;color:var(--dim);font-size:12px;padding-left:10px}
+.ms-pop input{accent-color:var(--gold);width:16px;height:16px;margin:0}
+.ms-pop .tdot{width:10px;height:10px;border-radius:3px;flex:none}
+.ms-pop .foot{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:4px;padding:6px 6px 2px;font-size:12px;color:var(--dim)}
+.ms-pop .foot button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:12px;text-decoration:underline}
+.sort{display:flex;align-items:center}
+.sort select{appearance:none;padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.sort select option{background:var(--card2);color:var(--text)}
+.clear-f{border-style:dashed}
 
 /* ---------- layers ---------- */
 main{padding-bottom:60px}
@@ -144,26 +162,32 @@ main{padding-bottom:60px}
 
 .routes{display:flex;flex-wrap:wrap;gap:14px}
 .route{flex:1 1 min(100%,calc(var(--n)*138px + 26px));min-width:0;max-width:calc(var(--n)*190px + 26px);background:linear-gradient(170deg,#1a2044,#141935);
-  border:1px solid var(--line);border-radius:var(--r);padding:12px;position:relative;transition:border-color .3s,box-shadow .3s;scroll-margin-top:90px}
+  border:1px solid var(--line);border-radius:var(--r);padding:12px;position:relative;transition:border-color .3s,box-shadow .3s;scroll-margin-top:90px;
+  display:flex;flex-direction:column;container-type:inline-size}
 .route.done{border-color:color-mix(in srgb,var(--lc) 55%,var(--line))}
 .route.perfect{border-color:var(--gold);box-shadow:0 0 24px -10px var(--gold)}
 .route.flash{animation:flash 1.6s}
 @keyframes flash{0%,100%{box-shadow:none}20%,60%{box-shadow:0 0 0 3px var(--gold),0 0 40px -6px var(--gold)}}
-.rhead{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;min-height:26px}
+.rhead{display:flex;align-items:center;gap:6px;height:28px;margin-bottom:6px;flex:none}
+.tags{display:flex;gap:4px;flex:1;min-width:0;overflow:hidden}
+.tag{flex:none;height:26px;min-width:26px;padding:0 6px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:4px;font-size:13px;border:1px solid;white-space:nowrap}
+.tag .lbl{display:none;font-size:12px}
+.tag.s{background:#7a5cff22;border-color:#7a5cff66;color:#cfc4ff}
+.tag.i{background:#ff7a3d22;border-color:#ff7a3d66;color:#ffd2b8}
+.tag.st{background:#ffd24a1c;border-color:#ffd24a66;color:#ffe9a8}
+.rmeta{display:flex;align-items:flex-start;gap:6px;height:34px;margin-bottom:8px;flex:none;overflow:hidden}
+.rmeta .time{flex:none;font-size:12px;line-height:20px;padding:0 8px;border-radius:999px;background:#4d9dff1c;border:1px solid #4d9dff55;color:#cfe3ff;white-space:nowrap}
+.rmeta .note{min-width:0;font-size:12.5px;line-height:17px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rmeta .none{font-size:12.5px;line-height:20px;color:var(--dim)}
 .rnum{font-family:"Press Start 2P",monospace;font-size:10px;color:var(--lc);background:#0006;padding:5px 7px;border-radius:7px}
-.badge{font-size:12px;padding:3px 8px;border-radius:999px;background:#ffffff0d;border:1px solid #ffffff14;color:var(--muted);white-space:nowrap}
-.badge.s{background:#7a5cff22;border-color:#7a5cff66;color:#cfc4ff}
-.badge.i{background:#ff7a3d22;border-color:#ff7a3d66;color:#ffd2b8}
-.badge.st{background:#ffd24a1c;border-color:#ffd24a66;color:#ffe9a8}
-.badge.t{background:#4d9dff1c;border-color:#4d9dff55;color:#cfe3ff}
-.rcheck{margin-left:auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#ffffff0d;color:transparent;transition:.3s}
+.rcheck{flex:none;margin-left:auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:#ffffff0d;color:transparent;transition:.3s}
 .route.done .rcheck{background:var(--lc);color:#071a0f;transform:scale(1.05)}
 .route.perfect .rcheck{background:var(--gold);color:#2b2000}
-.note{margin:0 0 10px;font-size:13px;color:var(--muted)}
 .mons{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px}
 
 .mon{position:relative;background:#0b0e20;border:1px solid #ffffff10;border-radius:14px;padding:8px 7px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;transition:border-color .3s,box-shadow .3s,transform .2s}
 .mon.hit{box-shadow:0 0 0 2px var(--l3)}
+.mon.dim{opacity:.32}
 .sprite{all:unset;cursor:pointer;width:100%;height:92px;display:grid;place-items:center;position:relative;border-radius:10px;
   background:radial-gradient(ellipse 60% 22% at 50% 86%,color-mix(in srgb,var(--type) 45%,transparent),transparent 70%)}
 .sprite:focus-visible{outline:2px solid var(--l3)}
@@ -196,8 +220,10 @@ body.art .mon:hover .sprite img{transform:scale(1.06)}
 .mon.done .chk .box::after{content:"✓";font-weight:700}
 .mon.shiny .shy{background:linear-gradient(135deg,#ffe58a,#ffb347);border-color:transparent;color:#3a2600}
 
-.also{margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
-.alsochip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 3px;border-radius:999px;border:1px dashed var(--line2);color:var(--muted);transition:.2s}
+.also{margin-top:auto;padding-top:10px;height:40px;flex:none;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:hidden;font-size:12px;color:var(--dim);white-space:nowrap}
+.alsochip{all:unset;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 3px;border-radius:999px;border:1px dashed var(--line2);color:var(--muted);transition:.2s}
+.alsochip .an{display:none}
+.alsochip em{padding-right:6px}
 .alsochip img{width:24px;height:24px;object-fit:contain;filter:brightness(0) opacity(.45)}
 .alsochip.done{border-style:solid;border-color:var(--ok);color:var(--text)}
 .alsochip.done img{filter:none}
@@ -322,10 +348,27 @@ footer a{color:var(--muted)}
       <button data-act="status" data-v="done">Feitos</button>
       <button data-act="status" data-v="shiny">Falta shiny</button>
     </div>
-    <button class="chip" data-act="flag" data-v="s" title="Rotas com Arcane Shard">💎 Shard</button>
-    <button class="chip" data-act="flag" data-v="i" title="Rotas em Instância">⚔️ Instância</button>
-    <button class="chip" data-act="flag" data-v="*" title="Shiny vale a pena">⭐ Shiny</button>
-    <button class="chip" data-act="flag" data-v="t" title="Com tempo médio informado">⏱️ Tempo</button>
+    <div class="ms" id="msFlags">
+      <button class="ms-btn" data-act="ms" aria-expanded="false" aria-haspopup="true">Rota<span class="sum"></span><span class="car">▼</span></button>
+      <div class="ms-pop" hidden></div>
+    </div>
+    <div class="ms" id="msTypes">
+      <button class="ms-btn" data-act="ms" aria-expanded="false" aria-haspopup="true">Tipo<span class="sum"></span><span class="car">▼</span></button>
+      <div class="ms-pop wide" hidden></div>
+    </div>
+    <label class="sort" title="Ordenar rotas dentro de cada camada">
+      <select id="sort" aria-label="Ordenar rotas">
+        <option value="guia">↕ Ordem do guia</option>
+        <option value="t-asc">⏱️ Mais rápidas primeiro</option>
+        <option value="t-desc">⏱️ Mais demoradas primeiro</option>
+        <option value="s">💎 Arcane Shard primeiro</option>
+        <option value="i">⚔️ Instância primeiro</option>
+        <option value="*">⭐ Vale o shiny primeiro</option>
+        <option value="pend">⏳ Menos feitas primeiro</option>
+        <option value="nome">🔤 Nome (A–Z)</option>
+      </select>
+    </label>
+    <button class="clear-f" data-act="clearall" id="clearAll" hidden>✕ Limpar filtros</button>
   </div>
 </div>
 
@@ -467,7 +510,7 @@ const MAX = ALL.length * (PT_DONE + PT_SHINY);
 
 /* ---------- storage ---------- */
 const KEY = 'pokelog-atk5:v1';
-const DEF_F = {layer:'all', status:'all', flags:[]};
+const DEF_F = {layer:'all', status:'all', flags:[], types:[], sort:'guia'};
 function load(){
   try{
     const s = JSON.parse(localStorage.getItem(KEY));
@@ -511,17 +554,25 @@ function tile(s){
     <div class="mbtns"><button class="chk" data-act="d" title="Pokelog completo (+${PT_DONE})"><span class="box"></span>Pokelog</button><button class="shy" data-act="s" title="Primeiro shiny (+${PT_SHINY})">✨ Shiny</button></div>
   </div>`;
 }
+// estrutura fixa: cabeçalho (1 linha) · meta (2 linhas) · pokémons · rodapé "também avança" (1 linha)
+const FLAGS = [
+  {v:'s', icon:'💎', label:'Arcane Shard', short:'Shard', has:R => R.s},
+  {v:'i', icon:'⚔️', label:'Instância', short:'Instância', has:R => R.inst},
+  {v:'*', icon:'⭐', label:'Vale o shiny', short:'Shiny', has:R => R.star},
+  {v:'t', icon:'⏱️', label:'Com tempo médio', has:R => !!R.time},
+  {v:'c', icon:'⚪', label:'Comum (sem tag)', has:R => !R.s && !R.inst && !R.star},
+];
 function routeHTML(R){
-  const b = [];
-  if(R.s) b.push('<span class="badge s">💎 Arcane Shard</span>');
-  if(R.inst) b.push('<span class="badge i">⚔️ Instância</span>');
-  if(R.star) b.push('<span class="badge st">⭐ Vale o shiny</span>');
-  if(R.time) b.push(`<span class="badge t">⏱️ ${R.time}</span>`);
+  const tags = FLAGS.slice(0, 3).filter(F => F.has(R)).map(F =>
+    `<span class="tag ${F.v === '*' ? 'st' : F.v}" title="${F.label}">${F.icon}<span class="lbl">${F.short}</span></span>`).join('');
+  const meta = (R.time ? `<span class="time">⏱️ ${R.time}</span>` : '') +
+    (R.note ? `<span class="note" title="${R.note}">${R.note}</span>` : '') ||
+    '<span class="none">Sem observações no guia</span>';
   const also = R.also.length ? `<div class="also">Também avança:${R.also.map(s =>
-    `<button class="alsochip" data-slug="${s}" data-act="d" title="${nm(s)} conta em ${HOME[s].name}"><img alt="" data-s="${s}" loading="lazy">${nm(s)}<em>${HOME[s].short}</em></button>`).join('')}</div>` : '';
+    `<button class="alsochip" data-slug="${s}" data-act="d" title="${nm(s)} · conta em ${HOME[s].name}"><img alt="${nm(s)}" data-s="${s}" loading="lazy"><span class="an">${nm(s)}</span><em>${HOME[s].short}</em></button>`).join('')}</div>` : '';
   return `<article class="route" id="${R.id}" style="--n:${R.mons.length}">
-    <div class="rhead"><span class="rnum">#${R.i}</span>${b.join('')}<span class="rcheck">✓</span></div>
-    ${R.note ? `<p class="note">${R.note}</p>` : ''}
+    <div class="rhead"><span class="rnum">#${R.i}</span><div class="tags">${tags}</div><span class="rcheck">✓</span></div>
+    <div class="rmeta">${meta}</div>
     <div class="mons">${R.mons.map(tile).join('')}</div>${also}
   </article>`;
 }
@@ -647,24 +698,77 @@ function renderControls(){
   const f = state.prefs.f;
   document.querySelectorAll('[data-act=layer]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === f.layer));
   document.querySelectorAll('[data-act=status]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === f.status));
-  document.querySelectorAll('[data-act=flag]').forEach(b => b.setAttribute('aria-pressed', f.flags.includes(b.dataset.v)));
+  const fb = $('#msFlags .ms-btn'), tb = $('#msTypes .ms-btn');
+  fb.classList.toggle('on', f.flags.length > 0);
+  fb.querySelector('.sum').textContent = f.flags.length ? ': ' + FLAGS.filter(F => f.flags.includes(F.v)).map(F => F.icon).join(' ') : '';
+  tb.classList.toggle('on', f.types.length > 0);
+  tb.querySelector('.sum').textContent = f.types.length === 1 ? ': ' + TN[f.types[0]] : f.types.length ? ` (${f.types.length})` : '';
+  document.querySelectorAll('.ms-pop input').forEach(i => i.checked = f[i.dataset.g].includes(i.value));
+  $('#sort').value = f.sort;
+  $('#clearAll').hidden = !(f.flags.length || f.types.length || f.status !== 'all' || f.layer !== 'all' || f.sort !== 'guia' || $('#q').value);
+}
+
+/* ---------- multi-select (OU dentro de cada grupo) ---------- */
+const TYPES_USED = Object.keys(TC).filter(t => ALL.some(s => MONS[s][1].includes(t))).sort((a, b) => TN[a].localeCompare(TN[b]));
+const msFoot = g => `<div class="foot"><span>Mostra rotas com qualquer um</span><button data-act="msclear" data-v="${g}">Limpar</button></div>`;
+$('#msFlags .ms-pop').innerHTML = FLAGS.map(F =>
+  `<label><input type="checkbox" data-g="flags" value="${F.v}">${F.icon} ${F.label}<small>${ROUTES.filter(F.has).length}</small></label>`).join('') + msFoot('flags');
+$('#msTypes .ms-pop').innerHTML = TYPES_USED.map(t =>
+  `<label><input type="checkbox" data-g="types" value="${t}"><span class="tdot" style="background:${TC[t]}"></span>${TN[t]}<small>${ALL.filter(s => MONS[s][1].includes(t)).length}</small></label>`).join('') + msFoot('types');
+function closeMs(except){
+  document.querySelectorAll('.ms').forEach(m => { if(m === except) return; m.querySelector('.ms-pop').hidden = true; m.querySelector('.ms-btn').setAttribute('aria-expanded', 'false'); });
+}
+document.addEventListener('change', e => {
+  const i = e.target;
+  if(i.dataset && i.dataset.g){
+    const f = state.prefs.f, g = i.dataset.g;
+    f[g] = i.checked ? [...new Set([...f[g], i.value])] : f[g].filter(x => x !== i.value);
+    save(); renderControls(); applyFilters();
+  } else if(i.id === 'sort'){ state.prefs.f.sort = i.value; save(); renderControls(); applyFilters(); }
+});
+document.addEventListener('click', e => { if(!e.target.closest('.ms')) closeMs(); });
+
+/* ---------- ordenação (dentro de cada camada, via CSS order) ---------- */
+const doneRatio = R => R.mons.filter(s => st(s).d).length / R.mons.length;
+const SORTS = {
+  't-asc':  R => R.mins || Infinity,
+  't-desc': R => R.mins ? -R.mins : Infinity,
+  's':      R => R.s ? 0 : 1,
+  'i':      R => R.inst ? 0 : 1,
+  '*':      R => R.star ? 0 : 1,
+  'pend':   R => doneRatio(R),
+};
+function applySort(){
+  const k = state.prefs.f.sort;
+  LAYERS.forEach(L => {
+    const list = [...L.routes];
+    if(k === 'nome') list.sort((a, b) => nm(a.mons[0]).localeCompare(nm(b.mons[0])));
+    else if(SORTS[k]) list.sort((a, b) => (SORTS[k](a) - SORTS[k](b)) || (a.i - b.i));
+    list.forEach((R, n) => R.el.style.order = k === 'guia' ? '' : n);
+  });
 }
 
 function applyFilters(){
   const f = state.prefs.f, q = norm($('#q').value.trim());
   ROUTES.forEach(R => {
     let v = f.layer === 'all' || R.L.key === f.layer;
-    if(v && f.flags.length) v = f.flags.every(x => x === 's' ? R.s : x === 'i' ? R.inst : x === '*' ? R.star : !!R.time);
+    if(v && f.flags.length) v = FLAGS.some(F => f.flags.includes(F.v) && F.has(R));
+    if(v && f.types.length) v = R.mons.some(s => MONS[s][1].some(t => f.types.includes(t)));
     if(v && f.status !== 'all'){
       const m = R.mons.map(st);
       v = f.status === 'pend' ? m.some(x => !x.d) : f.status === 'done' ? m.every(x => x.d) : m.some(x => !x.s);
     }
     if(v && q) v = [...R.mons, ...R.also].some(s => norm(nm(s)).includes(q)) || norm(R.note).includes(q);
     R.el.hidden = !v;
-    R.el.querySelectorAll('.mon').forEach(t => t.classList.toggle('hit', !!q && norm(nm(t.dataset.slug)).includes(q)));
+    R.el.querySelectorAll('.mon').forEach(t => {
+      t.classList.toggle('hit', !!q && norm(nm(t.dataset.slug)).includes(q));
+      t.classList.toggle('dim', f.types.length > 0 && !MONS[t.dataset.slug][1].some(x => f.types.includes(x)));
+    });
   });
   LAYERS.forEach(L => L.sec.hidden = !L.routes.some(R => !R.el.hidden));
   $('#empty').hidden = ROUTES.some(R => !R.el.hidden);
+  applySort();
+  $('#clearAll').hidden = !(f.flags.length || f.types.length || f.status !== 'all' || f.layer !== 'all' || f.sort !== 'guia' || q);
 }
 
 /* ---------- feedback ---------- */
@@ -758,7 +862,9 @@ document.addEventListener('click', e => {
     save(); renderControls(); applyFilters();
     if(a.classList.contains('lcard')) (f.layer === 'all' ? $('#main') : $('#sec-' + v)).scrollIntoView({block:'start'});
   } else if(act === 'status'){ f.status = v; save(); renderControls(); applyFilters(); }
-  else if(act === 'flag'){ f.flags = f.flags.includes(v) ? f.flags.filter(x => x !== v) : [...f.flags, v]; save(); renderControls(); applyFilters(); }
+  else if(act === 'ms'){ const m = a.closest('.ms'), pop = m.querySelector('.ms-pop'); closeMs(m); pop.hidden = !pop.hidden; a.setAttribute('aria-expanded', String(!pop.hidden)); }
+  else if(act === 'msclear'){ f[v] = []; save(); renderControls(); applyFilters(); }
+  else if(act === 'clearall'){ state.prefs.f = {...DEF_F, flags:[], types:[]}; $('#q').value = ''; save(); renderControls(); applyFilters(); }
   else if(act === 'goto'){
     const R = ROUTES.find(r => r.id === v);
     if(R.el.hidden){ state.prefs.f = {...DEF_F}; $('#q').value = ''; save(); renderControls(); applyFilters(); }
@@ -794,7 +900,7 @@ $('#importFile').onchange = async e => {
 $('#q').addEventListener('input', applyFilters);
 document.addEventListener('keydown', e => {
   if(e.key === '/' && document.activeElement !== $('#q')){ e.preventDefault(); $('#q').focus(); }
-  else if(e.key === 'Escape'){ if(!$('#celebrate').hidden) $('#celebrate').hidden = true; else if(document.activeElement === $('#q')){ $('#q').value = ''; applyFilters(); $('#q').blur(); } }
+  else if(e.key === 'Escape'){ closeMs(); if(!$('#celebrate').hidden) $('#celebrate').hidden = true; else if(document.activeElement === $('#q')){ $('#q').value = ''; applyFilters(); $('#q').blur(); } }
 });
 addEventListener('storage', e => { if(e.key === KEY){ state = load(); refresh(); applyFilters(); } });
 
